@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//l/system/**)",
+      "Read(//l/system/.claude/**)",
+      "Bash(docker-compose logs:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

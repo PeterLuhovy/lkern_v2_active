@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Frontend - React TypeScript
+  ui-web:
+    build: ./ui-web
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ui-web/src:/app/src
+      - ./ui-web/public:/app/public
+      - ./ui-web/package.json:/app/package.json
+      - ./ui-web/vite.config.ts:/app/vite.config.ts
+      - ./ui-web/tsconfig.json:/app/tsconfig.json
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - lkern-network
+
+  # Backend API (placeholder pre budúcnosť)
+  backend:
+    image: node:18-alpine
+    command: sh -c "echo 'Backend placeholder - L-KERN v2' && sleep infinity"
+    ports:
+      - "8000:8000"
+    networks:
+      - lkern-network
+
+  # Database (placeholder pre budúcnosť)
+  database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: lkern_v2
+      POSTGRES_USER: lkern
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lkern-network
+
+volumes:
+  postgres_data:
+
+networks:
+  lkern-network:
+    driver: bridge
