@@ -1,15 +1,15 @@
 /*
  * ================================================================
- * SÚBOR: OrdersVariant7.tsx
- * CESTA: /ui-web/src/design-variants/OrdersVariant7.tsx
- * POPIS: Perfektný variant - funkcionalita v7 + dizajn v6 + sortovanie + resizable + status bar
- * VERZIA: v2.0.0
- * UPRAVENÉ: 2024-09-24 21:35:00
+ * SÚBOR: OrdersVariant8.tsx
+ * CESTA: /ui-web/src/design-variants/OrdersVariant8.tsx
+ * POPIS: Funkcionalita v7 (sortovanie, resizable, filter) s kompletným dizajnom a farbami v6
+ * VERZIA: v1.0.0
+ * UPRAVENÉ: 2024-09-24 21:45:00
  * ================================================================
  */
 import React, { useState, useRef } from 'react';
-import lkernLogo from '../assets/logos/lkern-logo.png';
-import luhovyLogo from '../assets/logos/luhovy-logo.png';
+import lkernLogo from '../../assets/logos/lkern-logo.png';
+import luhovyLogo from '../../assets/logos/luhovy-logo.png';
 
 interface Order {
   id: string;
@@ -32,7 +32,7 @@ interface Order {
 type SortField = 'orderNumber' | 'customer' | 'priority' | 'status' | 'date' | 'value' | 'items';
 type SortDirection = 'asc' | 'desc';
 
-const OrdersVariant7: React.FC = () => {
+const OrdersVariant8: React.FC = () => {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<Set<string>>(new Set(['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']));
@@ -45,9 +45,10 @@ const OrdersVariant7: React.FC = () => {
   const dragStartX = useRef(0);
   const startWidth = useRef(0);
 
+  // Professional enterprise data - same as v7
   const baseOrders: Order[] = [
     {
-      id: '1',
+      id: '001',
       orderNumber: 'ORD-LCVV-240924-001-LMT',
       customer: 'Lockheed Martin Corporation',
       priority: 'CRITICAL',
@@ -55,14 +56,14 @@ const OrdersVariant7: React.FC = () => {
       date: '2024-09-24',
       value: 12500000,
       items: 127,
-      description: 'F-35 Lightning II fighter jet components',
+      description: 'F-35 Lightning II fighter jet advanced components',
       details: [
         { partNumber: 'LMT-F35-001', quantity: 45, unitPrice: 185000, specifications: 'Stealth coating titanium panels' },
         { partNumber: 'LMT-F35-002', quantity: 82, unitPrice: 95000, specifications: 'Avionics housing assemblies' }
       ]
     },
     {
-      id: '2',
+      id: '002',
       orderNumber: 'ORD-LIND-240923-002-BAE',
       customer: 'BAE Systems plc',
       priority: 'HIGH',
@@ -77,7 +78,7 @@ const OrdersVariant7: React.FC = () => {
       ]
     },
     {
-      id: '3',
+      id: '003',
       orderNumber: 'ORD-LCVV-240922-003-RTN',
       customer: 'Raytheon Technologies',
       priority: 'NORMAL',
@@ -92,7 +93,7 @@ const OrdersVariant7: React.FC = () => {
       ]
     },
     {
-      id: '4',
+      id: '004',
       orderNumber: 'ORD-LIND-240921-004-NGR',
       customer: 'Northrop Grumman',
       priority: 'HIGH',
@@ -107,7 +108,7 @@ const OrdersVariant7: React.FC = () => {
       ]
     },
     {
-      id: '5',
+      id: '005',
       orderNumber: 'ORD-LCVV-240920-005-BOE',
       customer: 'Boeing Defense',
       priority: 'LOW',
@@ -123,7 +124,7 @@ const OrdersVariant7: React.FC = () => {
     }
   ];
 
-  // Sorting logic
+  // Sorting logic - same as v7
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -133,7 +134,7 @@ const OrdersVariant7: React.FC = () => {
     }
   };
 
-  // Column resizing logic
+  // Column resizing logic - same as v7
   const handleMouseDown = (e: React.MouseEvent, index: number) => {
     e.preventDefault();
     setIsDragging(true);
@@ -192,7 +193,7 @@ const OrdersVariant7: React.FC = () => {
     setPriorityFilter(newFilter);
   };
 
-  // Sort and filter orders
+  // Sort and filter orders - same as v7
   const filteredAndSortedOrders = baseOrders
     .filter(order => {
       const matchesSearch = order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -224,6 +225,7 @@ const OrdersVariant7: React.FC = () => {
       }
     });
 
+  // Colors exactly like v6
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'CRITICAL': return '#d32f2f';
@@ -259,12 +261,12 @@ const OrdersVariant7: React.FC = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f2f3f7',
+      background: '#f2f3f7', // v6 background
       fontFamily: "'Segoe UI', sans-serif",
-      padding: '2rem 10rem 2rem 2rem'
+      padding: '2rem 10rem 2rem 2rem' // v6 padding
     }}>
 
-      {/* L-KERN HEADER - Style v6 */}
+      {/* L-KERN HEADER - EXACTLY like v6 */}
       <div style={{
         background: '#ffffff',
         padding: '20px',
@@ -282,7 +284,7 @@ const OrdersVariant7: React.FC = () => {
               margin: 0,
               fontSize: '28px',
               fontWeight: '700',
-              color: '#222222'
+              color: '#222222' // v6 text color
             }}>
               L-KERN Orders Management
             </h1>
@@ -292,14 +294,14 @@ const OrdersVariant7: React.FC = () => {
               fontWeight: '600',
               marginTop: '4px'
             }}>
-              Professional ERP System v7 • Manufacturing Operations
+              Professional ERP System v8 • Advanced Manufacturing Operations
             </div>
           </div>
         </div>
         <img src={luhovyLogo} alt="Luhovy Industries" style={{ height: '36px' }} />
       </div>
 
-      {/* Filter panel - funkcionalita v7 s dizajnom v6 */}
+      {/* Filter panel - v7 functionality with v6 design */}
       <div style={{
         background: '#ffffff',
         border: '1px solid #dee2e6',
@@ -307,7 +309,7 @@ const OrdersVariant7: React.FC = () => {
         padding: '24px',
         marginBottom: '2rem'
       }}>
-        {/* Search bar */}
+        {/* Search bar - v6 styling */}
         <div style={{ marginBottom: '20px' }}>
           <input
             type="text"
@@ -317,10 +319,10 @@ const OrdersVariant7: React.FC = () => {
             style={{
               width: '100%',
               padding: '12px 16px',
-              background: '#f2f3f7',
-              border: '2px solid #dee2e6',
-              borderRadius: '4px',
-              color: '#222222',
+              background: '#f2f3f7', // v6 input background
+              border: '2px solid #dee2e6', // v6 border
+              borderRadius: '4px', // v6 border radius
+              color: '#222222', // v6 text color
               fontSize: '16px',
               outline: 'none',
               transition: 'border-color 0.2s'
@@ -330,7 +332,7 @@ const OrdersVariant7: React.FC = () => {
           />
         </div>
 
-        {/* Fast filters */}
+        {/* Fast filters - v7 functionality, v6 styling */}
         <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
           {/* Status filter */}
           <div>
@@ -350,7 +352,7 @@ const OrdersVariant7: React.FC = () => {
                   gap: '6px',
                   cursor: 'pointer',
                   fontSize: '13px',
-                  color: '#222222',
+                  color: '#222222', // v6 text color
                   fontWeight: '600'
                 }}>
                   <input
@@ -386,7 +388,7 @@ const OrdersVariant7: React.FC = () => {
                   gap: '6px',
                   cursor: 'pointer',
                   fontSize: '13px',
-                  color: '#222222',
+                  color: '#222222', // v6 text color
                   fontWeight: '600'
                 }}>
                   <input
@@ -404,7 +406,7 @@ const OrdersVariant7: React.FC = () => {
             </div>
           </div>
 
-          {/* Results count a Report button */}
+          {/* Results count and Report button */}
           <div style={{
             marginLeft: 'auto',
             display: 'flex',
@@ -424,7 +426,7 @@ const OrdersVariant7: React.FC = () => {
                 padding: '8px 16px',
                 background: '#9c27b0',
                 border: 'none',
-                borderRadius: '4px',
+                borderRadius: '4px', // v6 border radius
                 color: 'white',
                 fontSize: '13px',
                 fontWeight: '600',
@@ -440,17 +442,17 @@ const OrdersVariant7: React.FC = () => {
         </div>
       </div>
 
-      {/* Main table - dizajn v6 s resizable columns */}
+      {/* Main table - EXACTLY v6 design with v7 functionality */}
       <div style={{
         background: '#ffffff',
         border: '1px solid #dee2e6',
         borderLeft: '6px solid #9c27b0',
         overflow: 'hidden'
       }}>
-        {/* Sortable Header */}
+        {/* Sortable Header - v7 functionality, v6 styling */}
         <div style={{
           display: 'flex',
-          background: 'linear-gradient(90deg, #9c27b0 0%, #6a1b9a 100%)',
+          background: 'linear-gradient(90deg, #9c27b0 0%, #6a1b9a 100%)', // v6 header
           color: 'white',
           fontWeight: '700',
           fontSize: '13px',
@@ -486,6 +488,7 @@ const OrdersVariant7: React.FC = () => {
                   {getSortIcon(col.field as SortField)}
                 </span>
               )}
+              {/* Resizable handle - v7 functionality */}
               {index < columnWidths.length - 1 && (
                 <div
                   style={{
@@ -504,7 +507,7 @@ const OrdersVariant7: React.FC = () => {
           ))}
         </div>
 
-        {/* Rows */}
+        {/* Rows - EXACTLY v6 styling */}
         {filteredAndSortedOrders.map((order, index) => (
           <div key={order.id}>
             {/* Main row */}
@@ -512,7 +515,7 @@ const OrdersVariant7: React.FC = () => {
               onClick={() => toggleRow(order.id)}
               style={{
                 display: 'flex',
-                background: index % 2 === 0 ? '#ffffff' : '#f8f9fa',
+                background: index % 2 === 0 ? '#ffffff' : '#f8f9fa', // v6 alternating colors
                 borderTop: index > 0 ? '1px solid #dee2e6' : 'none',
                 cursor: 'pointer',
                 transition: 'background-color 0.2s',
@@ -521,7 +524,7 @@ const OrdersVariant7: React.FC = () => {
                 alignItems: 'center'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#e3f2fd';
+                e.currentTarget.style.background = '#e3f2fd'; // v6 hover color
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = index % 2 === 0 ? '#ffffff' : '#f8f9fa';
@@ -550,7 +553,7 @@ const OrdersVariant7: React.FC = () => {
                 padding: '0 12px',
                 fontFamily: 'monospace',
                 fontWeight: '600',
-                color: '#3366cc'
+                color: '#3366cc' // v6 accent color
               }}>
                 {order.orderNumber}
               </div>
@@ -558,7 +561,8 @@ const OrdersVariant7: React.FC = () => {
                 width: `${columnWidths[2]}px`,
                 minWidth: `${columnWidths[2]}px`,
                 padding: '0 12px',
-                fontWeight: '600'
+                fontWeight: '600',
+                color: '#222222' // v6 text color
               }}>
                 {order.customer}
               </div>
@@ -569,7 +573,7 @@ const OrdersVariant7: React.FC = () => {
               }}>
                 <span style={{
                   padding: '4px 8px',
-                  borderRadius: '3px',
+                  borderRadius: '3px', // v6 border radius
                   fontSize: '12px',
                   fontWeight: '600',
                   background: getPriorityColor(order.priority),
@@ -585,7 +589,7 @@ const OrdersVariant7: React.FC = () => {
               }}>
                 <span style={{
                   padding: '4px 8px',
-                  borderRadius: '3px',
+                  borderRadius: '3px', // v6 border radius
                   fontSize: '12px',
                   fontWeight: '600',
                   background: getStatusColor(order.status),
@@ -599,7 +603,7 @@ const OrdersVariant7: React.FC = () => {
                 minWidth: `${columnWidths[5]}px`,
                 padding: '0 12px',
                 fontFamily: 'monospace',
-                color: '#666'
+                color: '#666' // v6 muted color
               }}>
                 {order.date}
               </div>
@@ -609,7 +613,7 @@ const OrdersVariant7: React.FC = () => {
                 padding: '0 12px',
                 textAlign: 'right',
                 fontWeight: '700',
-                color: '#388e3c'
+                color: '#388e3c' // v6 success color
               }}>
                 ${order.value.toLocaleString()}
               </div>
@@ -618,16 +622,17 @@ const OrdersVariant7: React.FC = () => {
                 minWidth: `${columnWidths[7]}px`,
                 padding: '0 12px',
                 textAlign: 'center',
-                fontWeight: '600'
+                fontWeight: '600',
+                color: '#222222' // v6 text color
               }}>
                 {order.items}
               </div>
             </div>
 
-            {/* Expanded details - štýl v6 */}
+            {/* Expanded details - EXACTLY v6 styling */}
             {expandedRows.has(order.id) && (
               <div style={{
-                background: '#f2f3f7',
+                background: '#f2f3f7', // v6 detail background
                 border: '2px solid #9c27b0',
                 borderTop: 'none',
                 padding: '24px',
@@ -645,7 +650,7 @@ const OrdersVariant7: React.FC = () => {
                 {order.details && (
                   <div style={{
                     background: '#ffffff',
-                    borderRadius: '4px',
+                    borderRadius: '4px', // v6 border radius
                     overflow: 'hidden',
                     border: '1px solid #dee2e6'
                   }}>
@@ -653,11 +658,11 @@ const OrdersVariant7: React.FC = () => {
                     <div style={{
                       display: 'grid',
                       gridTemplateColumns: '150px 80px 120px 1fr',
-                      background: '#f8f9fa',
+                      background: '#f8f9fa', // v6 header background
                       padding: '12px',
                       fontWeight: '700',
                       fontSize: '12px',
-                      color: '#222222',
+                      color: '#222222', // v6 text color
                       borderBottom: '1px solid #dee2e6'
                     }}>
                       <div>PART NUMBER</div>
@@ -672,29 +677,29 @@ const OrdersVariant7: React.FC = () => {
                         display: 'grid',
                         gridTemplateColumns: '150px 80px 120px 1fr',
                         padding: '12px',
-                        background: idx % 2 === 0 ? '#ffffff' : '#f8f9fa',
+                        background: idx % 2 === 0 ? '#ffffff' : '#f8f9fa', // v6 alternating
                         borderTop: idx > 0 ? '1px solid #dee2e6' : 'none'
                       }}>
                         <div style={{
                           fontFamily: 'monospace',
                           fontWeight: '600',
-                          color: '#3366cc'
+                          color: '#3366cc' // v6 accent
                         }}>
                           {detail.partNumber}
                         </div>
-                        <div style={{ textAlign: 'center', fontWeight: '600' }}>
+                        <div style={{ textAlign: 'center', fontWeight: '600', color: '#222222' }}>
                           {detail.quantity}
                         </div>
                         <div style={{
                           textAlign: 'right',
                           fontWeight: '600',
-                          color: '#388e3c'
+                          color: '#388e3c' // v6 success
                         }}>
                           ${detail.unitPrice.toLocaleString()}
                         </div>
                         <div style={{
                           paddingLeft: '16px',
-                          color: '#666'
+                          color: '#666' // v6 muted
                         }}>
                           {detail.specifications}
                         </div>
@@ -708,7 +713,7 @@ const OrdersVariant7: React.FC = () => {
         ))}
       </div>
 
-      {/* Status bar - štýl zo starého projektu */}
+      {/* Status bar - EXACTLY v6 style */}
       <div style={{
         marginTop: '2rem',
         display: 'flex',
@@ -723,21 +728,21 @@ const OrdersVariant7: React.FC = () => {
           <div style={{
             fontSize: '14px',
             fontWeight: '700',
-            color: '#222222'
+            color: '#222222' // v6 text color
           }}>
             <strong>Orders:</strong> {filteredAndSortedOrders.length}
           </div>
           <div style={{
             fontSize: '14px',
             fontWeight: '700',
-            color: '#222222'
+            color: '#222222' // v6 text color
           }}>
             <strong>Total Items:</strong> {totalItems.toLocaleString()}
           </div>
           <div style={{
             fontSize: '14px',
             fontWeight: '700',
-            color: '#388e3c'
+            color: '#388e3c' // v6 success color
           }}>
             <strong>Total Value:</strong> ${totalValue.toLocaleString()}
           </div>
@@ -745,14 +750,14 @@ const OrdersVariant7: React.FC = () => {
 
         <div style={{
           fontSize: '12px',
-          color: '#666',
+          color: '#666', // v6 muted
           fontWeight: '600'
         }}>
-          L-KERN Professional ERP v7 • Luhovy Industries Manufacturing Solutions
+          L-KERN Professional ERP v8 • Luhovy Industries Manufacturing Solutions
         </div>
       </div>
     </div>
   );
 };
 
-export default OrdersVariant7;
+export default OrdersVariant8;

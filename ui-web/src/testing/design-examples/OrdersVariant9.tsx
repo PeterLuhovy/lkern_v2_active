@@ -1,11 +1,11 @@
 /**
- * VARIANT 1: L-KERN Professional s StatusBar a ReportButton
- * Inšpirovaný OrdersVariant9 - kompletná funkcionálna verzia
+ * VARIANT 9: L-KERN Professional s StatusBar a ReportButton
+ * Inšpirovaný OrdersVariant6 + integrácia StatusBar a ReportButton z pôvodného systému
  * Farby z theme.css: #9c27b0, #3366cc, #f2f3f7, #222222
  */
 import React, { useState } from 'react';
-import lkernLogo from '../assets/logos/lkern-logo.png';
-import luhovyLogo from '../assets/logos/luhovy-logo.png';
+import lkernLogo from '../../assets/logos/lkern-logo.png';
+import luhovyLogo from '../../assets/logos/luhovy-logo.png';
 
 interface Order {
   id: string;
@@ -671,7 +671,7 @@ const ReportButton: React.FC = () => {
 
 // === HLAVNÝ KOMPONENT ===
 
-const OrdersVariant1: React.FC = () => {
+const OrdersVariant9: React.FC = () => {
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<Set<string>>(new Set(['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']));
@@ -888,8 +888,8 @@ const OrdersVariant1: React.FC = () => {
       minHeight: '100vh',
       background: '#f2f3f7',
       fontFamily: "'Segoe UI', sans-serif",
-      padding: '4rem 10rem 5rem 2rem',
-      paddingBottom: '80px'
+      padding: '2rem 10rem 5rem 2rem', // Pridaný bottom padding pre StatusBar
+      paddingBottom: '80px' // Extra space pre StatusBar
     }}>
 
       {/* L-KERN HEADER */}
@@ -898,13 +898,12 @@ const OrdersVariant1: React.FC = () => {
         padding: '20px',
         marginBottom: '2rem',
         border: '1px solid #dee2e6',
-        borderLeft: '6px solid #9c27b0',
         borderRadius: '8px',
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <img src={lkernLogo} alt="L-KERN" style={{ height: '60px' }} />
+            <img src={lkernLogo} alt="L-KERN" style={{ height: '42px' }} />
             <div>
               <h1 style={{
                 margin: 0,
@@ -912,7 +911,7 @@ const OrdersVariant1: React.FC = () => {
                 fontWeight: '700',
                 color: '#222222'
               }}>
-                Orders Management
+                L-KERN Orders Management
               </h1>
               <div style={{
                 fontSize: '14px',
@@ -920,11 +919,11 @@ const OrdersVariant1: React.FC = () => {
                 fontWeight: '600',
                 marginTop: '4px'
               }}>
-                Professional ERP System v1 • Manufacturing Operations
+                Professional ERP System v9 • Manufacturing Operations
               </div>
             </div>
           </div>
-          <img src={luhovyLogo} alt="Luhovy Industries" style={{ height: '50px' }} />
+          <img src={luhovyLogo} alt="Luhovy Industries" style={{ height: '36px' }} />
         </div>
       </div>
 
@@ -934,11 +933,11 @@ const OrdersVariant1: React.FC = () => {
         border: '1px solid #dee2e6',
         borderLeft: '6px solid #3366cc',
         borderRadius: '8px',
-        padding: '16px',
-        marginBottom: '1.5rem'
+        padding: '24px',
+        marginBottom: '2rem'
       }}>
         {/* Search bar */}
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginBottom: '20px' }}>
           <input
             type="text"
             placeholder="Search orders, customers, descriptions..."
@@ -1074,7 +1073,6 @@ const OrdersVariant1: React.FC = () => {
       <div style={{
         background: 'white',
         border: '1px solid #dee2e6',
-        borderLeft: '6px solid #9c27b0',
         borderRadius: '8px',
         overflow: 'hidden'
       }}>
@@ -1097,7 +1095,7 @@ const OrdersVariant1: React.FC = () => {
               onClick={() => column.sortable && handleSort(column.field)}
               style={{
                 width: `${columnWidths[index]}px`,
-                flex: index === 3 ? '1' : '0 0 auto',
+                flex: index === 3 ? '1' : '0 0 auto', // Zákazník je flex
                 padding: '6px 12px',
                 cursor: column.sortable ? 'pointer' : 'default',
                 display: 'flex',
@@ -1451,28 +1449,25 @@ const OrdersVariant1: React.FC = () => {
           background: 'white',
           padding: '12px 16px',
           border: '1px solid #dee2e6',
-          borderLeft: '6px solid #3366cc',
           borderRadius: '4px'
         }}>
-          <strong style={{ color: '#3366cc' }}>Active Orders:</strong> 127
+          <strong style={{ color: '#9c27b0' }}>Active Orders:</strong> 127
         </div>
         <div style={{
           background: 'white',
           padding: '12px 16px',
           border: '1px solid #dee2e6',
-          borderLeft: '6px solid #9c27b0',
           borderRadius: '4px'
         }}>
-          <strong style={{ color: '#9c27b0' }}>Completed This Month:</strong> 1,524
+          <strong style={{ color: '#3366cc' }}>Completed This Month:</strong> 1,524
         </div>
         <div style={{
           background: 'white',
           padding: '12px 16px',
           border: '1px solid #dee2e6',
-          borderLeft: '6px solid #3366cc',
           borderRadius: '4px'
         }}>
-          <strong style={{ color: '#3366cc' }}>Total Value:</strong> $26.6M
+          <strong style={{ color: '#f57c00' }}>Total Value:</strong> $26.6M
         </div>
       </div>
 
@@ -1485,4 +1480,4 @@ const OrdersVariant1: React.FC = () => {
   );
 };
 
-export default OrdersVariant1;
+export default OrdersVariant9;

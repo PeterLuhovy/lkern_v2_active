@@ -1,18 +1,18 @@
 /**
- * VARIANT 9: L-KERN Professional s StatusBar a ReportButton
- * Inšpirovaný OrdersVariant6 + integrácia StatusBar a ReportButton z pôvodného systému
+ * VARIANT 2: L-KERN Professional s StatusBar a ReportButton
+ * Inšpirovaný OrdersVariant9 - kompletná funkcionálna verzia
  * Farby z theme.css: #9c27b0, #3366cc, #f2f3f7, #222222
  */
 import React, { useState } from 'react';
-import lkernLogo from '../assets/logos/lkern-logo.png';
-import luhovyLogo from '../assets/logos/luhovy-logo.png';
+import lkernLogo from '../../assets/logos/lkern-logo.png';
+import luhovyLogo from '../../assets/logos/luhovy-logo.png';
 
 interface Order {
   id: string;
   orderNumber: string;
   customer: string;
   priority: 'LOW' | 'NORMAL' | 'HIGH' | 'CRITICAL';
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  status: 'PENDING' | 'IN_PRODUCTION' | 'COMPLETED' | 'INVOICED_UNPAID' | 'INVOICED_PAID' | 'CANCELLED' | 'COMPLAINT';
   date: string;
   value: number;
   items?: number;
@@ -20,14 +20,33 @@ interface Order {
 
 // === STATUS BAR KOMPONENTY ===
 
-interface ServiceStatus {
-  name: string;
-  status: 'healthy' | 'unhealthy' | 'down' | 'unknown';
-  critical: boolean;
-  response_time: number;
+
+interface StatusBarProps {
+  currentUser: {
+    name: string;
+    position: string;
+    department: string;
+    avatar: string;
+  };
+  theme: {
+    background: string;
+    cardBackground: string;
+    text: string;
+    textSecondary: string;
+    textMuted: string;
+    border: string;
+    headerBackground: string;
+    shadow: string;
+    inputBackground: string;
+    inputBorder: string;
+    hoverBackground: string;
+  };
+  isDarkMode: boolean;
+  toggleDarkMode: () => void;
 }
 
-const StatusBar: React.FC = () => {
+const StatusBar: React.FC<StatusBarProps> = ({ currentUser, theme, isDarkMode, toggleDarkMode }) => {
+  const currentTheme = theme;
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Backup state
@@ -109,18 +128,39 @@ const StatusBar: React.FC = () => {
     fetchLastBackupInfo();
   }, []);
 
+  // Click outside to close status bar
+  const statusBarRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (statusBarRef.current && !statusBarRef.current.contains(event.target as Node) && isExpanded) {
+        setIsExpanded(false);
+      }
+    };
+
+    if (isExpanded) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isExpanded]);
+
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      background: 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%)',
-      borderTop: '1px solid #e5e5e5',
-      boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)',
-      zIndex: 100,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
+    <div
+      ref={statusBarRef}
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: currentTheme.cardBackground,
+        borderTop: `1px solid ${currentTheme.border}`,
+        boxShadow: currentTheme.shadow,
+        zIndex: 100,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      }}>
       {/* ZÁKLADNÝ STATUS RIADOK */}
       <div
         onClick={() => setIsExpanded(!isExpanded)}
@@ -134,7 +174,7 @@ const StatusBar: React.FC = () => {
           transition: 'background-color 0.2s ease'
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.02)';
+          e.currentTarget.style.backgroundColor = currentTheme.hoverBackground;
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.backgroundColor = 'transparent';
@@ -152,16 +192,73 @@ const StatusBar: React.FC = () => {
             ● Všetky služby fungujú
           </span>
 
-          <span style={{ fontSize: '13px', color: '#666', fontWeight: '500' }}>
+          <span style={{ fontSize: '13px', color: currentTheme.textMuted, fontWeight: '500' }}>
             (3/3 služieb)
           </span>
 
-          <span style={{ fontSize: '12px', color: '#999' }}>
+          <span style={{ fontSize: '12px', color: currentTheme.textMuted }}>
             • Aktualizované {new Date().toLocaleTimeString('sk-SK')}
           </span>
+
+          {/* User info separator */}
+          <span style={{ fontSize: '12px', color: currentTheme.border, margin: '0 8px' }}>|</span>
+
+          {/* Current user info */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            fontSize: '12px',
+            color: currentTheme.textMuted
+          }}>
+            <span style={{ fontSize: '16px' }}>{currentUser.avatar}</span>
+            <span style={{ fontWeight: '600', color: currentTheme.text }}>{currentUser.name}</span>
+            <span style={{ color: currentTheme.textMuted }}>•</span>
+            <span style={{ color: '#9c27b0', fontWeight: '500', fontSize: '13px' }}>{currentUser.position}</span>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Dark/Light mode toggle - moved to right side */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}>
+            <span style={{ fontSize: '14px' }}>
+              {isDarkMode ? '🌙' : '☀️'}
+            </span>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleDarkMode();
+              }}
+              style={{
+                width: '40px',
+                height: '20px',
+                borderRadius: '10px',
+                background: isDarkMode ? '#3366cc' : '#9c27b0',
+                position: 'relative',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease',
+                border: `1px solid ${isDarkMode ? '#2c5aa0' : '#6a1b9a'}`
+              }}
+              title={`Switch to ${isDarkMode ? 'Light' : 'Dark'} mode`}
+            >
+              <div style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                background: 'white',
+                position: 'absolute',
+                top: '1px',
+                left: isDarkMode ? '21px' : '1px',
+                transition: 'left 0.3s ease',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.3)'
+              }} />
+            </div>
+          </div>
+
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -169,20 +266,19 @@ const StatusBar: React.FC = () => {
             }}
             style={{
               background: 'none',
-              border: '1px solid #ddd',
+              border: `1px solid ${currentTheme.border}`,
               borderRadius: '4px',
               padding: '4px 8px',
               cursor: 'pointer',
               fontSize: '14px',
-              color: '#666',
-              marginRight: '8px',
+              color: currentTheme.textMuted,
               transition: 'all 0.2s ease'
             }}
             title="Manuálna aktualizácia"
           >
             ↻
           </button>
-          <span style={{ color: '#666', fontSize: '12px' }}>
+          <span style={{ color: currentTheme.textMuted, fontSize: '12px' }}>
             {isExpanded ? '▼' : '▲'}
           </span>
         </div>
@@ -191,8 +287,8 @@ const StatusBar: React.FC = () => {
       {/* ROZŠÍRENÝ DETAIL */}
       {isExpanded && (
         <div style={{
-          borderTop: '1px solid #e9ecef',
-          background: '#fafbfc',
+          borderTop: `1px solid ${currentTheme.border}`,
+          background: currentTheme.hoverBackground,
           padding: '16px',
           maxHeight: '300px',
           overflowY: 'auto'
@@ -205,17 +301,20 @@ const StatusBar: React.FC = () => {
               alignItems: 'center',
               marginBottom: '8px',
               paddingBottom: '4px',
-              borderBottom: '1px solid #e9ecef'
+              borderBottom: `1px solid ${currentTheme.border}`,
+              background: currentTheme.headerBackground,
+              padding: '8px 12px',
+              borderRadius: '4px'
             }}>
               <h4 style={{
                 margin: 0,
                 fontSize: '13px',
                 fontWeight: '600',
-                color: '#333',
+                color: currentTheme.textSecondary,
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px'
               }}>Kritické služby</h4>
-              <span style={{ fontSize: '11px', color: '#666', fontWeight: '500' }}>
+              <span style={{ fontSize: '11px', color: currentTheme.textMuted, fontWeight: '500' }}>
                 (2/2)
               </span>
             </div>
@@ -230,11 +329,13 @@ const StatusBar: React.FC = () => {
                     gap: '6px',
                     padding: '6px 10px',
                     borderRadius: '6px',
-                    border: '1px solid #e5e5e5',
-                    background: 'white',
+                    borderTop: `1px solid ${currentTheme.border}`,
+                    borderRight: `1px solid ${currentTheme.border}`,
+                    borderBottom: `1px solid ${currentTheme.border}`,
+                    borderLeft: '3px solid #f44336',
+                    background: currentTheme.cardBackground,
                     fontSize: '12px',
-                    minWidth: '120px',
-                    borderLeft: '3px solid #f44336'
+                    minWidth: '120px'
                   }}
                   title={`${service.name}: ${service.status} (${service.response_time}ms)`}
                 >
@@ -251,13 +352,13 @@ const StatusBar: React.FC = () => {
                   </span>
                   <span style={{
                     fontWeight: '500',
-                    color: '#333',
+                    color: currentTheme.text,
                     flex: 1,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis'
                   }}>{service.name}</span>
-                  <span style={{ fontSize: '10px', color: '#999', fontWeight: '400' }}>
+                  <span style={{ fontSize: '10px', color: currentTheme.textMuted, fontWeight: '400' }}>
                     {service.response_time}ms
                   </span>
                 </div>
@@ -273,17 +374,20 @@ const StatusBar: React.FC = () => {
               alignItems: 'center',
               marginBottom: '8px',
               paddingBottom: '4px',
-              borderBottom: '1px solid #e9ecef'
+              borderBottom: `1px solid ${currentTheme.border}`,
+              background: currentTheme.headerBackground,
+              padding: '8px 12px',
+              borderRadius: '4px'
             }}>
               <h4 style={{
                 margin: 0,
                 fontSize: '13px',
                 fontWeight: '600',
-                color: '#333',
+                color: currentTheme.textSecondary,
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px'
               }}>Ostatné služby</h4>
-              <span style={{ fontSize: '11px', color: '#666', fontWeight: '500' }}>
+              <span style={{ fontSize: '11px', color: currentTheme.textMuted, fontWeight: '500' }}>
                 (1/1)
               </span>
             </div>
@@ -298,11 +402,13 @@ const StatusBar: React.FC = () => {
                     gap: '6px',
                     padding: '6px 10px',
                     borderRadius: '6px',
-                    border: '1px solid #e5e5e5',
-                    background: 'white',
+                    borderTop: `1px solid ${currentTheme.border}`,
+                    borderRight: `1px solid ${currentTheme.border}`,
+                    borderBottom: `1px solid ${currentTheme.border}`,
+                    borderLeft: '3px solid #2196f3',
+                    background: currentTheme.cardBackground,
                     fontSize: '12px',
-                    minWidth: '120px',
-                    borderLeft: '3px solid #2196f3'
+                    minWidth: '120px'
                   }}
                   title={`${service.name}: ${service.status} (${service.response_time}ms)`}
                 >
@@ -319,13 +425,13 @@ const StatusBar: React.FC = () => {
                   </span>
                   <span style={{
                     fontWeight: '500',
-                    color: '#333',
+                    color: currentTheme.text,
                     flex: 1,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis'
                   }}>{service.name}</span>
-                  <span style={{ fontSize: '10px', color: '#999', fontWeight: '400' }}>
+                  <span style={{ fontSize: '10px', color: currentTheme.textMuted, fontWeight: '400' }}>
                     {service.response_time}ms
                   </span>
                 </div>
@@ -341,17 +447,20 @@ const StatusBar: React.FC = () => {
               alignItems: 'center',
               marginBottom: '8px',
               paddingBottom: '4px',
-              borderBottom: '1px solid #e9ecef'
+              borderBottom: `1px solid ${currentTheme.border}`,
+              background: currentTheme.headerBackground,
+              padding: '8px 12px',
+              borderRadius: '4px'
             }}>
               <h4 style={{
                 margin: 0,
                 fontSize: '13px',
                 fontWeight: '600',
-                color: '#333',
+                color: currentTheme.textSecondary,
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px'
               }}>Databázy</h4>
-              <span style={{ fontSize: '11px', color: '#666', fontWeight: '500' }}>
+              <span style={{ fontSize: '11px', color: currentTheme.textMuted, fontWeight: '500' }}>
                 (3/3)
               </span>
 
@@ -382,11 +491,13 @@ const StatusBar: React.FC = () => {
                     gap: '6px',
                     padding: '6px 10px',
                     borderRadius: '6px',
-                    border: '1px solid #e5e5e5',
-                    background: '#f8f9fa',
+                    borderTop: `1px solid ${currentTheme.border}`,
+                    borderRight: `1px solid ${currentTheme.border}`,
+                    borderBottom: `1px solid ${currentTheme.border}`,
+                    borderLeft: '3px solid #9c27b0',
+                    background: currentTheme.inputBackground,
                     fontSize: '12px',
-                    minWidth: '120px',
-                    borderLeft: '3px solid #9c27b0'
+                    minWidth: '120px'
                   }}
                   title={`${service.name} DB: healthy (${service.response_time}ms)`}
                 >
@@ -403,13 +514,13 @@ const StatusBar: React.FC = () => {
                   </span>
                   <span style={{
                     fontWeight: '500',
-                    color: '#333',
+                    color: currentTheme.text,
                     flex: 1,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis'
                   }}>{service.name} DB</span>
-                  <span style={{ fontSize: '10px', color: '#999', fontWeight: '400' }}>
+                  <span style={{ fontSize: '10px', color: currentTheme.textMuted, fontWeight: '400' }}>
                     {service.response_time}ms
                   </span>
                 </div>
@@ -428,13 +539,15 @@ const StatusBar: React.FC = () => {
                   gap: '6px',
                   padding: '6px 10px',
                   borderRadius: '6px',
-                  border: '1px solid #e5e5e5',
+                  borderTop: '1px solid #e5e5e5',
+                  borderRight: '1px solid #e5e5e5',
+                  borderBottom: '1px solid #e5e5e5',
+                  borderLeft: isBackupRunning ? '3px solid #2196f3' : '3px solid #ff9800',
                   background: isBackupRunning ?
                     'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)' :
                     'linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%)',
                   fontSize: '12px',
                   minWidth: '120px',
-                  borderLeft: isBackupRunning ? '3px solid #2196f3' : '3px solid #ff9800',
                   cursor: isBackupRunning ? 'not-allowed' : 'pointer',
                   opacity: isBackupRunning ? 0.7 : 1,
                   boxShadow: isBackupRunning ?
@@ -475,7 +588,7 @@ const StatusBar: React.FC = () => {
 
                 <span style={{
                   fontWeight: '500',
-                  color: '#333',
+                  color: currentTheme.text,
                   flex: 1,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
@@ -484,7 +597,7 @@ const StatusBar: React.FC = () => {
                   {isBackupRunning ? 'Backup prebíha...' : 'Zálohovať DB'}
                 </span>
 
-                <span style={{ fontSize: '10px', color: '#999', fontWeight: '400' }}>
+                <span style={{ fontSize: '10px', color: currentTheme.textMuted, fontWeight: '400' }}>
                   {isBackupRunning ? `${backupProgress}%` : 'OneClick'}
                 </span>
               </div>
@@ -534,7 +647,7 @@ const StatusBar: React.FC = () => {
                                 backupStatus.includes('❌') ? '#f8d7da' : '#f8f9fa',
                 borderRadius: '4px',
                 fontSize: '11px',
-                color: '#333'
+                color: currentTheme.text
               }}>
                 {backupStatus}
               </div>
@@ -545,9 +658,9 @@ const StatusBar: React.FC = () => {
           <div style={{
             marginTop: '12px',
             paddingTop: '8px',
-            borderTop: '1px solid #e9ecef',
+            borderTop: `1px solid ${currentTheme.border}`,
             textAlign: 'center',
-            color: '#6c757d',
+            color: currentTheme.textMuted,
             background: 'rgba(108, 117, 125, 0.05)',
             borderRadius: '4px',
             padding: '8px'
@@ -645,8 +758,8 @@ const ReportButton: React.FC = () => {
             maxWidth: '400px',
             width: '90%'
           }} onClick={(e) => e.stopPropagation()}>
-            <h3 style={{ margin: '0 0 16px 0', color: '#333' }}>Nahlásiť problém</h3>
-            <p style={{ margin: '0 0 16px 0', color: '#666' }}>
+            <h3 style={{ margin: '0 0 16px 0', color: '#222' }}>Nahlásiť problém</h3>
+            <p style={{ margin: '0 0 16px 0', color: '#888' }}>
               Tento modal by obsahoval formulár pre nahlasovanie chýb a návrhov na vylepšenia.
             </p>
             <button
@@ -671,14 +784,43 @@ const ReportButton: React.FC = () => {
 
 // === HLAVNÝ KOMPONENT ===
 
-const OrdersVariant9: React.FC = () => {
+const OrdersVariant2: React.FC = () => {
+  // Load settings from localStorage
+  const loadSettings = () => {
+    try {
+      const saved = localStorage.getItem('lkern_orders_settings');
+      if (saved) {
+        const settings = JSON.parse(saved);
+        return {
+          isDarkMode: settings.isDarkMode || false,
+          columnWidths: settings.columnWidths || [50, 180, 140, 300, 200, 120, 200],
+          statusFilter: new Set<string>(settings.statusFilter || ['PENDING', 'IN_PRODUCTION', 'COMPLETED', 'INVOICED_UNPAID', 'INVOICED_PAID', 'CANCELLED', 'COMPLAINT']),
+          priorityFilter: new Set<string>(settings.priorityFilter || ['LOW', 'NORMAL', 'HIGH', 'CRITICAL']),
+          itemsPerPage: settings.itemsPerPage || 20
+        };
+      }
+    } catch (e) {
+      console.warn('Failed to load settings from localStorage:', e);
+    }
+    return {
+      isDarkMode: false,
+      columnWidths: [50, 180, 140, 300, 200, 120, 200],
+      statusFilter: new Set(['PENDING', 'IN_PRODUCTION', 'COMPLETED', 'INVOICED_UNPAID', 'INVOICED_PAID', 'CANCELLED', 'COMPLAINT']),
+      priorityFilter: new Set(['LOW', 'NORMAL', 'HIGH', 'CRITICAL']),
+      itemsPerPage: 20
+    };
+  };
+
+  const initialSettings = loadSettings();
+
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<Set<string>>(new Set(['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']));
-  const [priorityFilter, setPriorityFilter] = useState<Set<string>>(new Set(['LOW', 'NORMAL', 'HIGH', 'CRITICAL']));
+  const [statusFilter, setStatusFilter] = useState<Set<string>>(initialSettings.statusFilter);
+  const [priorityFilter, setPriorityFilter] = useState<Set<string>>(initialSettings.priorityFilter);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(initialSettings.isDarkMode);
 
   // Column widths and resizing
-  const [columnWidths, setColumnWidths] = useState<number[]>([50, 180, 140, 300, 200, 120, 200]);
+  const [columnWidths, setColumnWidths] = useState<number[]>(initialSettings.columnWidths);
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [resizingColumn, setResizingColumn] = useState<number>(-1);
   const resizeStartX = React.useRef<number>(0);
@@ -688,14 +830,47 @@ const OrdersVariant9: React.FC = () => {
   const [sortField, setSortField] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
-  // Professional enterprise data
+  // Items per page state
+  const [itemsPerPage, setItemsPerPage] = useState<number>(initialSettings.itemsPerPage);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // Current user info
+  const currentUser = {
+    name: 'Ing. Martin Novák',
+    position: 'Vedúci výroby',
+    department: 'Manufacturing Operations',
+    avatar: '👨‍💼'
+  };
+
+  // Save settings to localStorage
+  const saveSettings = () => {
+    try {
+      const settings = {
+        isDarkMode,
+        columnWidths,
+        statusFilter: Array.from(statusFilter),
+        priorityFilter: Array.from(priorityFilter),
+        itemsPerPage
+      };
+      localStorage.setItem('lkern_orders_settings', JSON.stringify(settings));
+    } catch (e) {
+      console.warn('Failed to save settings to localStorage:', e);
+    }
+  };
+
+  // Save settings when they change
+  React.useEffect(() => {
+    saveSettings();
+  }, [isDarkMode, columnWidths, statusFilter, priorityFilter, itemsPerPage]);
+
+  // Professional enterprise data - 20 objednávok s rôznymi statusmi
   const orders: Order[] = [
     {
       id: '001',
       orderNumber: 'ORD-LCVV-240924-001-LMT',
       customer: 'Lockheed Martin Corporation',
       priority: 'CRITICAL',
-      status: 'IN_PROGRESS',
+      status: 'PENDING',
       date: '2024-09-24',
       value: 12500000,
       items: 127
@@ -705,7 +880,7 @@ const OrdersVariant9: React.FC = () => {
       orderNumber: 'ORD-LIND-240923-002-BAE',
       customer: 'BAE Systems plc',
       priority: 'HIGH',
-      status: 'PENDING',
+      status: 'IN_PRODUCTION',
       date: '2024-09-23',
       value: 8900000,
       items: 89
@@ -719,6 +894,176 @@ const OrdersVariant9: React.FC = () => {
       date: '2024-09-22',
       value: 5200000,
       items: 156
+    },
+    {
+      id: '004',
+      orderNumber: 'ORD-LCVV-240921-004-GDY',
+      customer: 'General Dynamics Corporation',
+      priority: 'HIGH',
+      status: 'INVOICED_UNPAID',
+      date: '2024-09-21',
+      value: 7800000,
+      items: 98
+    },
+    {
+      id: '005',
+      orderNumber: 'ORD-LIND-240920-005-NOC',
+      customer: 'Northrop Grumman Corporation',
+      priority: 'CRITICAL',
+      status: 'INVOICED_PAID',
+      date: '2024-09-20',
+      value: 14200000,
+      items: 203
+    },
+    {
+      id: '006',
+      orderNumber: 'ORD-LCVV-240919-006-BOE',
+      customer: 'Boeing Defense Systems',
+      priority: 'NORMAL',
+      status: 'CANCELLED',
+      date: '2024-09-19',
+      value: 6100000,
+      items: 76
+    },
+    {
+      id: '007',
+      orderNumber: 'ORD-LIND-240918-007-LHM',
+      customer: 'L3Harris Technologies',
+      priority: 'LOW',
+      status: 'COMPLAINT',
+      date: '2024-09-18',
+      value: 3400000,
+      items: 42
+    },
+    {
+      id: '008',
+      orderNumber: 'ORD-LCVV-240917-008-TST',
+      customer: 'Textron Systems',
+      priority: 'HIGH',
+      status: 'PENDING',
+      date: '2024-09-17',
+      value: 4900000,
+      items: 68
+    },
+    {
+      id: '009',
+      orderNumber: 'ORD-LIND-240916-009-HII',
+      customer: 'Huntington Ingalls Industries',
+      priority: 'NORMAL',
+      status: 'IN_PRODUCTION',
+      date: '2024-09-16',
+      value: 9300000,
+      items: 134
+    },
+    {
+      id: '010',
+      orderNumber: 'ORD-LCVV-240915-010-AER',
+      customer: 'Aerojet Rocketdyne',
+      priority: 'LOW',
+      status: 'COMPLETED',
+      date: '2024-09-15',
+      value: 2700000,
+      items: 38
+    },
+    {
+      id: '011',
+      orderNumber: 'ORD-LCVV-240914-011-COL',
+      customer: 'Collins Aerospace',
+      priority: 'HIGH',
+      status: 'INVOICED_UNPAID',
+      date: '2024-09-14',
+      value: 6800000,
+      items: 92
+    },
+    {
+      id: '012',
+      orderNumber: 'ORD-LIND-240913-012-UTC',
+      customer: 'UTC Aerospace Systems',
+      priority: 'CRITICAL',
+      status: 'INVOICED_PAID',
+      date: '2024-09-13',
+      value: 11200000,
+      items: 178
+    },
+    {
+      id: '013',
+      orderNumber: 'ORD-LCVV-240912-013-SAF',
+      customer: 'Safran Group',
+      priority: 'NORMAL',
+      status: 'CANCELLED',
+      date: '2024-09-12',
+      value: 4100000,
+      items: 56
+    },
+    {
+      id: '014',
+      orderNumber: 'ORD-LIND-240911-014-THR',
+      customer: 'Thales Group',
+      priority: 'LOW',
+      status: 'COMPLAINT',
+      date: '2024-09-11',
+      value: 3900000,
+      items: 63
+    },
+    {
+      id: '015',
+      orderNumber: 'ORD-LCVV-240910-015-LEO',
+      customer: 'Leonardo S.p.A.',
+      priority: 'HIGH',
+      status: 'PENDING',
+      date: '2024-09-10',
+      value: 7300000,
+      items: 104
+    },
+    {
+      id: '016',
+      orderNumber: 'ORD-LIND-240909-016-AIR',
+      customer: 'Airbus Defence and Space',
+      priority: 'CRITICAL',
+      status: 'IN_PRODUCTION',
+      date: '2024-09-09',
+      value: 15800000,
+      items: 234
+    },
+    {
+      id: '017',
+      orderNumber: 'ORD-LCVV-240908-017-EMB',
+      customer: 'Embraer Defense',
+      priority: 'NORMAL',
+      status: 'COMPLETED',
+      date: '2024-09-08',
+      value: 5700000,
+      items: 81
+    },
+    {
+      id: '018',
+      orderNumber: 'ORD-LIND-240907-018-KAI',
+      customer: 'Korea Aerospace Industries',
+      priority: 'HIGH',
+      status: 'INVOICED_UNPAID',
+      date: '2024-09-07',
+      value: 8400000,
+      items: 119
+    },
+    {
+      id: '019',
+      orderNumber: 'ORD-LCVV-240906-019-TAI',
+      customer: 'Turkish Aerospace Industries',
+      priority: 'LOW',
+      status: 'INVOICED_PAID',
+      date: '2024-09-06',
+      value: 4500000,
+      items: 67
+    },
+    {
+      id: '020',
+      orderNumber: 'ORD-LIND-240905-020-SAA',
+      customer: 'SAAB AB',
+      priority: 'NORMAL',
+      status: 'COMPLAINT',
+      date: '2024-09-05',
+      value: 6200000,
+      items: 94
     }
   ];
 
@@ -762,14 +1107,89 @@ const OrdersVariant9: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'COMPLETED': return '#388e3c';
-      case 'IN_PROGRESS': return '#3366cc';
-      case 'PENDING': return '#f57c00';
-      case 'CANCELLED': return '#d32f2f';
-      default: return '#616161';
+  // Theme colors
+  const theme = {
+    light: {
+      background: '#f2f3f7',
+      cardBackground: '#ffffff',
+      text: '#222222',
+      textSecondary: '#495057',
+      textMuted: '#666',
+      border: '#dee2e6',
+      headerBackground: '#d5d6dd',
+      shadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+      inputBackground: '#f2f3f7',
+      inputBorder: '#dee2e6',
+      hoverBackground: '#f8f9fa'
+    },
+    dark: {
+      background: '#1a1a1a',
+      cardBackground: '#2d2d2d',
+      text: '#e0e0e0',
+      textSecondary: '#b0b0b0',
+      textMuted: '#888',
+      border: '#404040',
+      headerBackground: '#383838',
+      shadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+      inputBackground: '#4a4a4a',
+      inputBorder: '#666666',
+      hoverBackground: '#404040'
     }
+  };
+
+  const currentTheme = isDarkMode ? theme.dark : theme.light;
+
+  const getStatusColor = (status: string, forDarkMode: boolean = isDarkMode) => {
+    if (forDarkMode) {
+      // Dark mode farby - svetlejšie a kontrastnejšie
+      switch (status) {
+        case 'PENDING': return '#ffc107';           // Žltá - čakajúce
+        case 'IN_PRODUCTION': return '#ff9800';     // Oranžová - vo výrobe
+        case 'COMPLETED': return '#ddb3e7';         // Slabo fialová - vyrobené
+        case 'INVOICED_UNPAID': return '#90caf9';   // Svetlá modrá
+        case 'INVOICED_PAID': return '#66bb6a';     // Svetlá zelená
+        case 'CANCELLED': return '#757575';         // Tmavá šedá
+        case 'COMPLAINT': return '#e57373';         // Výrazná červená pre dark mode
+        default: return '#888888';
+      }
+    } else {
+      // Light mode farby
+      switch (status) {
+        case 'PENDING': return '#ffc107';           // Žltá - čakajúce
+        case 'IN_PRODUCTION': return '#f57c00';     // Oranžová - vo výrobe
+        case 'COMPLETED': return '#ddb3e7';         // Slabo fialová - vyrobené
+        case 'INVOICED_UNPAID': return '#bbdefb';   // Bledá modrá
+        case 'INVOICED_PAID': return '#4caf50';     // Silná zelená
+        case 'CANCELLED': return '#e0e0e0';         // Bledá šedá
+        case 'COMPLAINT': return '#f44336';         // Výrazná červená
+        default: return '#616161';
+      }
+    }
+  };
+
+  // Funkcia pre získanie písmena statusu
+  const getStatusPrefix = (status: string) => {
+    switch (status) {
+      case 'PENDING': return 'A -';
+      case 'IN_PRODUCTION': return 'B -';
+      case 'COMPLETED': return 'C -';
+      case 'INVOICED_UNPAID': return 'D -';
+      case 'INVOICED_PAID': return 'E -';
+      case 'COMPLAINT': return 'F -';
+      case 'CANCELLED': return 'H -';
+      default: return '';
+    }
+  };
+
+  // Funkcia pre získanie farby pozadia riadku
+  const getRowBackgroundColor = (status: string, isExpanded: boolean) => {
+    const baseColor = getStatusColor(status);
+    return isExpanded ? baseColor : `${baseColor}80`; // 50% priehľadnosť pre zbalené riadky
+  };
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
   };
 
   // Column headers configuration
@@ -795,8 +1215,8 @@ const OrdersVariant9: React.FC = () => {
     }
   };
 
-  // Filter and sort orders
-  const filteredAndSortedOrders = React.useMemo(() => {
+  // Filter, sort and paginate orders
+  const { paginatedOrders, totalPages, totalFilteredItems } = React.useMemo(() => {
     // First filter
     let filtered = orders.filter(order => {
       const matchesSearch = order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -807,37 +1227,49 @@ const OrdersVariant9: React.FC = () => {
     });
 
     // Then sort
-    if (!sortField) return filtered;
+    if (sortField) {
+      filtered = filtered.sort((a, b) => {
+        let aVal: any = a[sortField as keyof Order];
+        let bVal: any = b[sortField as keyof Order];
 
-    return filtered.sort((a, b) => {
-      let aVal: any = a[sortField as keyof Order];
-      let bVal: any = b[sortField as keyof Order];
+        // Handle date sorting
+        if (sortField === 'date') {
+          aVal = new Date(aVal).getTime();
+          bVal = new Date(bVal).getTime();
+        }
 
-      // Handle date sorting
-      if (sortField === 'date') {
-        aVal = new Date(aVal).getTime();
-        bVal = new Date(bVal).getTime();
-      }
+        // Handle numeric sorting
+        if (sortField === 'value') {
+          aVal = Number(aVal);
+          bVal = Number(bVal);
+        }
 
-      // Handle numeric sorting
-      if (sortField === 'value') {
-        aVal = Number(aVal);
-        bVal = Number(bVal);
-      }
+        // Handle string sorting
+        if (typeof aVal === 'string' && typeof bVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
 
-      // Handle string sorting
-      if (typeof aVal === 'string' && typeof bVal === 'string') {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
-      }
+        if (sortDirection === 'asc') {
+          return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        } else {
+          return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+        }
+      });
+    }
 
-      if (sortDirection === 'asc') {
-        return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-      } else {
-        return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
-      }
-    });
-  }, [orders, searchQuery, statusFilter, priorityFilter, sortField, sortDirection]);
+    // Calculate pagination
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedOrders = filtered.slice(startIndex, endIndex);
+
+    return {
+      paginatedOrders,
+      totalPages,
+      totalFilteredItems: filtered.length
+    };
+  }, [orders, searchQuery, statusFilter, priorityFilter, sortField, sortDirection, itemsPerPage, currentPage]);
 
   // Column resizing functions
   const handleMouseDown = (e: React.MouseEvent, columnIndex: number) => {
@@ -886,32 +1318,36 @@ const OrdersVariant9: React.FC = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f2f3f7',
+      background: currentTheme.background,
       fontFamily: "'Segoe UI', sans-serif",
-      padding: '2rem 10rem 5rem 2rem', // Pridaný bottom padding pre StatusBar
-      paddingBottom: '80px' // Extra space pre StatusBar
+      padding: '4rem 10rem 5rem 2rem',
+      paddingBottom: '80px',
+      transition: 'background-color 0.3s ease'
     }}>
+
 
       {/* L-KERN HEADER */}
       <div style={{
-        background: '#ffffff',
+        background: currentTheme.cardBackground,
         padding: '20px',
         marginBottom: '2rem',
-        border: '1px solid #dee2e6',
+        border: `1px solid ${currentTheme.border}`,
+        borderLeft: '6px solid #9c27b0',
         borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
+        boxShadow: currentTheme.shadow,
+        transition: 'all 0.3s ease'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <img src={lkernLogo} alt="L-KERN" style={{ height: '42px' }} />
+            <img src={lkernLogo} alt="L-KERN" style={{ height: '60px' }} />
             <div>
               <h1 style={{
                 margin: 0,
                 fontSize: '28px',
                 fontWeight: '700',
-                color: '#222222'
+                color: currentTheme.text
               }}>
-                L-KERN Orders Management
+                Orders Management
               </h1>
               <div style={{
                 fontSize: '14px',
@@ -919,25 +1355,26 @@ const OrdersVariant9: React.FC = () => {
                 fontWeight: '600',
                 marginTop: '4px'
               }}>
-                Professional ERP System v9 • Manufacturing Operations
+                Professional ERP System v2 • Manufacturing Operations
               </div>
             </div>
           </div>
-          <img src={luhovyLogo} alt="Luhovy Industries" style={{ height: '36px' }} />
+          <img src={luhovyLogo} alt="Luhovy Industries" style={{ height: '50px' }} />
         </div>
       </div>
 
-      {/* FILTER PANEL - štýl ako stránka 7 */}
+      {/* FILTER PANEL */}
       <div style={{
-        background: '#ffffff',
-        border: '1px solid #dee2e6',
+        background: currentTheme.cardBackground,
+        border: `1px solid ${currentTheme.border}`,
         borderLeft: '6px solid #3366cc',
         borderRadius: '8px',
-        padding: '24px',
-        marginBottom: '2rem'
+        padding: '16px',
+        marginBottom: '1.5rem',
+        transition: 'all 0.3s ease'
       }}>
         {/* Search bar */}
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '16px' }}>
           <input
             type="text"
             placeholder="Search orders, customers, descriptions..."
@@ -945,56 +1382,87 @@ const OrdersVariant9: React.FC = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               width: 'calc(100% - 32px)',
-              padding: '12px 16px',
-              background: '#f2f3f7',
-              border: '2px solid #dee2e6',
+              padding: '8px 16px',
+              background: currentTheme.inputBackground,
+              border: `2px solid ${currentTheme.inputBorder}`,
               borderRadius: '4px',
-              color: '#222222',
+              color: currentTheme.text,
               fontSize: '16px',
               outline: 'none',
               transition: 'border-color 0.2s',
               boxSizing: 'border-box'
             }}
             onFocus={(e) => e.target.style.borderColor = '#9c27b0'}
-            onBlur={(e) => e.target.style.borderColor = '#dee2e6'}
+            onBlur={(e) => e.target.style.borderColor = currentTheme.inputBorder}
           />
         </div>
 
         {/* Quick filters */}
-        <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '48px', alignItems: 'flex-start', position: 'relative', minHeight: '120px' }}>
           {/* Status filter */}
           <div>
             <div style={{
               fontSize: '14px',
               fontWeight: '700',
               color: '#9c27b0',
-              marginBottom: '8px'
+              marginBottom: '12px'
             }}>
               STATUS FILTER
             </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              {['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map(status => (
-                <label key={status} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  color: '#222222',
-                  fontWeight: '600'
-                }}>
-                  <input
-                    type="checkbox"
-                    checked={statusFilter.has(status)}
-                    onChange={() => handleStatusFilterChange(status)}
-                    style={{
-                      accentColor: '#9c27b0',
-                      transform: 'scale(1.1)'
-                    }}
-                  />
-                  {status}
-                </label>
-              ))}
+            <div>
+              {/* First row - 3 items */}
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '8px' }}>
+                {['PENDING', 'IN_PRODUCTION', 'COMPLETED'].map(status => (
+                  <label key={status} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    color: currentTheme.text,
+                    fontWeight: '600',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={statusFilter.has(status)}
+                      onChange={() => handleStatusFilterChange(status)}
+                      style={{
+                        accentColor: '#9c27b0',
+                        transform: 'scale(1.1)'
+                      }}
+                    />
+                    {status.replace('_', ' ')}
+                  </label>
+                ))}
+              </div>
+
+              {/* Second row - 4 items */}
+              <div style={{ display: 'flex', gap: '16px' }}>
+                {['INVOICED_UNPAID', 'INVOICED_PAID', 'CANCELLED', 'COMPLAINT'].map(status => (
+                  <label key={status} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    color: currentTheme.text,
+                    fontWeight: '600',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={statusFilter.has(status)}
+                      onChange={() => handleStatusFilterChange(status)}
+                      style={{
+                        accentColor: '#9c27b0',
+                        transform: 'scale(1.1)'
+                      }}
+                    />
+                    {status.replace('_', ' ')}
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1004,11 +1472,11 @@ const OrdersVariant9: React.FC = () => {
               fontSize: '14px',
               fontWeight: '700',
               color: '#9c27b0',
-              marginBottom: '8px'
+              marginBottom: '12px'
             }}>
               PRIORITY FILTER
             </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', maxWidth: '300px' }}>
               {['LOW', 'NORMAL', 'HIGH', 'CRITICAL'].map(priority => (
                 <label key={priority} style={{
                   display: 'flex',
@@ -1016,7 +1484,7 @@ const OrdersVariant9: React.FC = () => {
                   gap: '6px',
                   cursor: 'pointer',
                   fontSize: '13px',
-                  color: '#222222',
+                  color: currentTheme.text,
                   fontWeight: '600'
                 }}>
                   <input
@@ -1034,58 +1502,114 @@ const OrdersVariant9: React.FC = () => {
             </div>
           </div>
 
-          {/* Results count a New Order button */}
+          {/* Pravá časť - všetky prvky v jednom riadku - PRAVÝ DOLNÝ ROH */}
           <div style={{
-            marginLeft: 'auto',
+            position: 'absolute',
+            bottom: '0',
+            right: '0',
             display: 'flex',
             alignItems: 'center',
             gap: '16px'
           }}>
+            {/* Orders count - úplne vľavo */}
             <div style={{
               color: '#3366cc',
               fontSize: '14px',
               fontWeight: '700'
             }}>
-              📊 {filteredAndSortedOrders.length} orders
+              📊 <span style={{ color: currentTheme.text }}>{totalFilteredItems}/{orders.length} orders</span>
             </div>
+
+            {/* Items per page selector - v strede */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{
+                fontSize: '13px',
+                color: currentTheme.text,
+                fontWeight: '600'
+              }}>
+                Na stránku:
+              </span>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setItemsPerPage(Number(e.target.value));
+                  setCurrentPage(1); // Reset na prvú stránku
+                }}
+                style={{
+                  padding: '4px 8px',
+                  background: currentTheme.inputBackground,
+                  border: `1px solid ${currentTheme.inputBorder}`,
+                  borderRadius: '4px',
+                  color: currentTheme.text,
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+
+            {/* New Order button - úplne vpravo */}
             <button
               style={{
-                padding: '8px 16px',
-                background: '#9c27b0',
+                padding: '10px 18px',
+                background: 'linear-gradient(135deg, #9c27b0, #6a1b9a)',
                 border: 'none',
-                borderRadius: '4px',
+                borderRadius: '6px',
                 color: 'white',
                 fontSize: '13px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'background-color 0.2s'
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 8px rgba(156, 39, 176, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                whiteSpace: 'nowrap'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#6a1b9a'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#9c27b0'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #6a1b9a, #4a148c)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(156, 39, 176, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #9c27b0, #6a1b9a)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(156, 39, 176, 0.3)';
+              }}
+              title="Vytvoriť novú objednávku"
             >
-              ➕ New Order
+              <span style={{ fontSize: '14px' }}>➕</span>
+              <span>New Order</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* DATA GRID - ako starý systém */}
+      {/* DATA GRID */}
       <div style={{
-        background: 'white',
-        border: '1px solid #dee2e6',
+        background: currentTheme.cardBackground,
+        border: `1px solid ${currentTheme.border}`,
+        borderLeft: '6px solid #9c27b0',
         borderRadius: '8px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        transition: 'all 0.3s ease'
       }}>
 
         {/* GRID HEADER */}
         <div style={{
           display: 'flex',
-          background: '#f2f2f2',
-          border: '1px solid #dee2e6',
+          background: currentTheme.headerBackground,
+          border: `1px solid ${currentTheme.border}`,
           borderRadius: '8px 8px 0 0',
           fontWeight: 'bold',
           fontSize: '14px',
-          color: '#495057',
+          color: currentTheme.textSecondary,
           textTransform: 'capitalize',
           letterSpacing: '0.5px'
         }}>
@@ -1095,7 +1619,7 @@ const OrdersVariant9: React.FC = () => {
               onClick={() => column.sortable && handleSort(column.field)}
               style={{
                 width: `${columnWidths[index]}px`,
-                flex: index === 3 ? '1' : '0 0 auto', // Zákazník je flex
+                flex: index === 3 ? '1' : '0 0 auto',
                 padding: '6px 12px',
                 cursor: column.sortable ? 'pointer' : 'default',
                 display: 'flex',
@@ -1106,12 +1630,18 @@ const OrdersVariant9: React.FC = () => {
               }}
               onMouseEnter={(e) => {
                 if (column.sortable) {
-                  e.currentTarget.style.backgroundColor = '#e9ecef';
+                  e.currentTarget.style.backgroundColor = isDarkMode ? '#4a4a4a' : '#e0e0e0';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = isDarkMode
+                    ? '0 2px 8px rgba(255, 255, 255, 0.1)'
+                    : '0 2px 8px rgba(0, 0, 0, 0.1)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (column.sortable) {
                   e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }
               }}
             >
@@ -1155,43 +1685,79 @@ const OrdersVariant9: React.FC = () => {
         </div>
 
         {/* DATA ROWS */}
-        {filteredAndSortedOrders.map((order, index) => (
+        {paginatedOrders.map((order) => (
           <div key={order.id}>
             {/* MAIN ROW */}
             <div
               onClick={() => toggleExpand(order.id)}
               style={{
                 display: 'flex',
-                borderBottom: '1px solid #dee2e6',
+                borderBottom: `1px solid ${currentTheme.border}`,
                 cursor: 'pointer',
-                background: expandedOrders.has(order.id) ? '#f8f9fa' : 'white',
-                transition: 'background-color 0.2s ease'
+                background: getRowBackgroundColor(order.status, expandedOrders.has(order.id)),
+                borderLeft: expandedOrders.has(order.id) ? '4px solid #3366cc' : '4px solid transparent',
+                transition: 'all 0.2s ease',
+                boxShadow: expandedOrders.has(order.id) ? '0 2px 8px rgba(51, 102, 204, 0.1)' : 'none'
               }}
               onMouseEnter={(e) => {
-                if (!expandedOrders.has(order.id)) {
-                  e.currentTarget.style.background = '#f8f9fa';
-                }
+                const currentBg = getRowBackgroundColor(order.status, expandedOrders.has(order.id));
+                e.currentTarget.style.background = currentBg;
+                e.currentTarget.style.filter = isDarkMode ? 'brightness(1.4)' : 'brightness(0.7)';
+                e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
+                e.currentTarget.style.boxShadow = isDarkMode
+                  ? '0 8px 24px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(255, 255, 255, 0.1)'
+                  : '0 8px 24px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.15)';
+                e.currentTarget.style.zIndex = '10';
+                e.currentTarget.style.borderRadius = '4px';
               }}
               onMouseLeave={(e) => {
-                if (!expandedOrders.has(order.id)) {
-                  e.currentTarget.style.background = 'white';
-                }
+                const currentBg = getRowBackgroundColor(order.status, expandedOrders.has(order.id));
+                e.currentTarget.style.background = currentBg;
+                e.currentTarget.style.filter = 'brightness(1)';
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow = expandedOrders.has(order.id)
+                  ? '0 2px 8px rgba(51, 102, 204, 0.1)'
+                  : 'none';
+                e.currentTarget.style.zIndex = '1';
+                e.currentTarget.style.borderRadius = '0';
               }}
             >
               {/* Expand arrow */}
-              <div style={{
-                width: `${columnWidths[0]}px`,
-                flex: '0 0 auto',
-                padding: '6px 12px',
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                <span style={{
-                  fontSize: '12px',
-                  color: '#666',
-                  transform: expandedOrders.has(order.id) ? 'rotate(90deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s ease'
-                }}>
+              <div
+                style={{
+                  width: `${columnWidths[0]}px`,
+                  flex: '0 0 auto',
+                  padding: '6px 12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  const arrow = e.currentTarget.querySelector('.expand-arrow') as HTMLElement;
+                  if (arrow) {
+                    arrow.style.color = '#3366cc';
+                    arrow.style.transform = expandedOrders.has(order.id) ? 'rotate(90deg) scale(1.2)' : 'rotate(0deg) scale(1.2)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  const arrow = e.currentTarget.querySelector('.expand-arrow') as HTMLElement;
+                  if (arrow) {
+                    arrow.style.color = expandedOrders.has(order.id) ? '#3366cc' : '#666';
+                    arrow.style.transform = expandedOrders.has(order.id) ? 'rotate(90deg) scale(1)' : 'rotate(0deg) scale(1)';
+                  }
+                }}
+              >
+                <span
+                  className="expand-arrow"
+                  style={{
+                    fontSize: '16px',
+                    color: expandedOrders.has(order.id) ? '#3366cc' : currentTheme.textMuted,
+                    transform: expandedOrders.has(order.id) ? 'rotate(90deg)' : 'rotate(0deg)',
+                    transition: 'all 0.2s ease',
+                    fontWeight: 'bold',
+                    userSelect: 'none'
+                  }}
+                >
                   ▶
                 </span>
               </div>
@@ -1205,15 +1771,11 @@ const OrdersVariant9: React.FC = () => {
                 alignItems: 'center'
               }}>
                 <span style={{
-                  padding: '2px 4px',
-                  borderRadius: '4px',
-                  fontSize: '11px',
+                  fontSize: '0.85rem',
                   fontWeight: '500',
-                  background: `${getStatusColor(order.status)}15`,
-                  color: getStatusColor(order.status),
-                  border: `1px solid ${getStatusColor(order.status)}30`
+                  color: currentTheme.textSecondary
                 }}>
-                  {order.status.replace('_', ' ')}
+                  {getStatusPrefix(order.status)} {order.status.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
                 </span>
               </div>
 
@@ -1223,7 +1785,7 @@ const OrdersVariant9: React.FC = () => {
                 flex: '0 0 auto',
                 padding: '6px 12px',
                 fontSize: '0.85rem',
-                color: '#495057',
+                color: currentTheme.textSecondary,
                 display: 'flex',
                 alignItems: 'center'
               }}>
@@ -1235,7 +1797,7 @@ const OrdersVariant9: React.FC = () => {
                 flex: '1',
                 padding: '6px 12px',
                 fontSize: '0.85rem',
-                color: '#495057',
+                color: currentTheme.textSecondary,
                 display: 'flex',
                 alignItems: 'center'
               }}>
@@ -1249,7 +1811,7 @@ const OrdersVariant9: React.FC = () => {
                 padding: '6px 12px',
                 fontSize: '0.85rem',
                 fontFamily: 'monospace',
-                color: '#495057',
+                color: currentTheme.textSecondary,
                 display: 'flex',
                 alignItems: 'center'
               }}>
@@ -1263,7 +1825,7 @@ const OrdersVariant9: React.FC = () => {
                 padding: '6px 12px',
                 fontSize: '0.85rem',
                 fontWeight: 'bold',
-                color: '#495057',
+                color: currentTheme.textSecondary,
                 display: 'flex',
                 alignItems: 'center'
               }}>
@@ -1315,27 +1877,28 @@ const OrdersVariant9: React.FC = () => {
               </div>
             </div>
 
-            {/* EXPANDED CONTENT - ako starý systém */}
+            {/* EXPANDED CONTENT */}
             {expandedOrders.has(order.id) && (
               <div style={{
                 padding: '20px',
-                background: '#f8f9fa',
-                borderBottom: '1px solid #dee2e6',
-                borderTop: '1px solid #dee2e6'
+                background: currentTheme.hoverBackground,
+                borderBottom: `1px solid ${currentTheme.border}`,
+                borderTop: `1px solid ${currentTheme.border}`,
+                transition: 'all 0.3s ease'
               }}>
                 {/* Tabuľka s položkami - jednoduchá ako starý systém */}
                 <div style={{ marginBottom: '16px' }}>
                   <h4 style={{
                     margin: '0 0 12px 0',
-                    color: '#333',
+                    color: currentTheme.text,
                     fontSize: '16px',
                     fontWeight: '600'
                   }}>
                     Položky objednávky
                   </h4>
                   <div style={{
-                    background: 'white',
-                    border: '1px solid #dee2e6',
+                    background: currentTheme.cardBackground,
+                    border: `1px solid ${currentTheme.border}`,
                     borderRadius: '4px'
                   }}>
                     <div style={{
@@ -1343,11 +1906,11 @@ const OrdersVariant9: React.FC = () => {
                       gridTemplateColumns: '1fr 100px 100px 120px 100px',
                       gap: '12px',
                       padding: '8px 12px',
-                      background: '#f2f2f2',
-                      borderBottom: '1px solid #dee2e6',
+                      background: currentTheme.headerBackground,
+                      borderBottom: `1px solid ${currentTheme.border}`,
                       fontSize: '12px',
                       fontWeight: 'bold',
-                      color: '#495057'
+                      color: currentTheme.textSecondary
                     }}>
                       <div>Názov súčiastky/služby</div>
                       <div>Množstvo</div>
@@ -1361,9 +1924,9 @@ const OrdersVariant9: React.FC = () => {
                         gridTemplateColumns: '1fr 100px 100px 120px 100px',
                         gap: '12px',
                         padding: '8px 12px',
-                        borderBottom: i < 3 ? '1px solid #f1f5f9' : 'none',
+                        borderBottom: i < 3 ? `1px solid ${currentTheme.border}` : 'none',
                         fontSize: '13px',
-                        color: '#495057'
+                        color: currentTheme.textSecondary
                       }}>
                         <div>Titanium Alloy Component #{i}</div>
                         <div>{10 * i}</div>
@@ -1390,7 +1953,7 @@ const OrdersVariant9: React.FC = () => {
                     }}>
                       Order Information
                     </h5>
-                    <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#495057' }}>
+                    <div style={{ fontSize: '13px', lineHeight: '1.6', color: currentTheme.textSecondary }}>
                       <div><strong>Order ID:</strong> {order.id}</div>
                       <div><strong>Items:</strong> {order.items} components</div>
                       <div><strong>Created:</strong> {order.date}</div>
@@ -1407,7 +1970,7 @@ const OrdersVariant9: React.FC = () => {
                     }}>
                       Customer Details
                     </h5>
-                    <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#495057' }}>
+                    <div style={{ fontSize: '13px', lineHeight: '1.6', color: currentTheme.textSecondary }}>
                       <div><strong>Company:</strong> {order.customer}</div>
                       <div><strong>Account Type:</strong> Enterprise</div>
                       <div><strong>Payment Terms:</strong> Net 30</div>
@@ -1424,7 +1987,7 @@ const OrdersVariant9: React.FC = () => {
                     }}>
                       File Information
                     </h5>
-                    <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#495057' }}>
+                    <div style={{ fontSize: '13px', lineHeight: '1.6', color: currentTheme.textSecondary }}>
                       <div><strong>Directory:</strong> /L/divisions/01/operations/sales/orders/2024/09/</div>
                       <div><strong>Files:</strong> 5 attachments</div>
                       <div><strong>Total Size:</strong> 12.4 MB</div>
@@ -1438,7 +2001,102 @@ const OrdersVariant9: React.FC = () => {
         ))}
       </div>
 
-      {/* FOOTER STATS - jednoduché ako starý systém */}
+      {/* PAGINATION */}
+      {totalPages > 1 && (
+        <div style={{
+          background: currentTheme.cardBackground,
+          border: `1px solid ${currentTheme.border}`,
+          borderRadius: '8px',
+          padding: '16px',
+          marginTop: '1rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{
+            fontSize: '14px',
+            color: currentTheme.textSecondary,
+            fontWeight: '500'
+          }}>
+            Stránka {currentPage} z {totalPages} • Zobrazujem {paginatedOrders.length} z {totalFilteredItems} záznamov
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              style={{
+                padding: '6px 12px',
+                background: currentPage === 1 ? currentTheme.border : '#3366cc',
+                color: currentPage === 1 ? currentTheme.textMuted : 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                fontSize: '13px',
+                fontWeight: '600',
+                transition: 'all 0.2s'
+              }}
+            >
+              ← Predchádzajúca
+            </button>
+
+            {/* Page numbers */}
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum = i + 1;
+                if (totalPages > 5) {
+                  if (currentPage > 3) {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  if (pageNum > totalPages) pageNum = totalPages - (5 - 1 - i);
+                }
+
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    style={{
+                      padding: '6px 10px',
+                      background: pageNum === currentPage ? '#9c27b0' : currentTheme.inputBackground,
+                      color: pageNum === currentPage ? 'white' : currentTheme.text,
+                      border: `1px solid ${currentTheme.border}`,
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      minWidth: '32px',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              style={{
+                padding: '6px 12px',
+                background: currentPage === totalPages ? currentTheme.border : '#3366cc',
+                color: currentPage === totalPages ? currentTheme.textMuted : 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                fontSize: '13px',
+                fontWeight: '600',
+                transition: 'all 0.2s'
+              }}
+            >
+              Ďalšia →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* FOOTER STATS */}
       <div style={{
         marginTop: '20px',
         display: 'flex',
@@ -1446,33 +2104,45 @@ const OrdersVariant9: React.FC = () => {
         fontSize: '14px'
       }}>
         <div style={{
-          background: 'white',
+          background: currentTheme.cardBackground,
           padding: '12px 16px',
-          border: '1px solid #dee2e6',
-          borderRadius: '4px'
+          border: `1px solid ${currentTheme.border}`,
+          borderLeft: '6px solid #3366cc',
+          borderRadius: '4px',
+          transition: 'all 0.3s ease'
         }}>
-          <strong style={{ color: '#9c27b0' }}>Active Orders:</strong> 127
+          <span style={{ color: '#3366cc', fontWeight: 'bold' }}>Active Orders:</span> <span style={{ color: currentTheme.text, fontWeight: 'bold' }}>127</span>
         </div>
         <div style={{
-          background: 'white',
+          background: currentTheme.cardBackground,
           padding: '12px 16px',
-          border: '1px solid #dee2e6',
-          borderRadius: '4px'
+          border: `1px solid ${currentTheme.border}`,
+          borderLeft: '6px solid #9c27b0',
+          borderRadius: '4px',
+          transition: 'all 0.3s ease'
         }}>
-          <strong style={{ color: '#3366cc' }}>Completed This Month:</strong> 1,524
+          <span style={{ color: '#9c27b0', fontWeight: 'bold' }}>Completed This Month:</span> <span style={{ color: currentTheme.text, fontWeight: 'bold' }}>1,524</span>
         </div>
         <div style={{
-          background: 'white',
+          background: currentTheme.cardBackground,
           padding: '12px 16px',
-          border: '1px solid #dee2e6',
-          borderRadius: '4px'
+          border: `1px solid ${currentTheme.border}`,
+          borderLeft: '6px solid #3366cc',
+          borderRadius: '4px',
+          transition: 'all 0.3s ease'
         }}>
-          <strong style={{ color: '#f57c00' }}>Total Value:</strong> $26.6M
+          <span style={{ color: '#3366cc', fontWeight: 'bold' }}>Total Value:</span> <span style={{ color: currentTheme.text, fontWeight: 'bold' }}>$26.6M</span>
         </div>
       </div>
 
+
       {/* STATUS BAR - fixed na dole */}
-      <StatusBar />
+      <StatusBar
+        currentUser={currentUser}
+        theme={currentTheme}
+        isDarkMode={isDarkMode}
+        toggleDarkMode={toggleDarkMode}
+      />
 
       {/* REPORT BUTTON - fixed vpravo hore */}
       <ReportButton />
@@ -1480,4 +2150,4 @@ const OrdersVariant9: React.FC = () => {
   );
 };
 
-export default OrdersVariant9;
+export default OrdersVariant2;
