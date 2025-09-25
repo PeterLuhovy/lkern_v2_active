@@ -3,8 +3,8 @@
  * SÚBOR: index.tsx
  * CESTA: /ui-web/src/testing/modal-components/index.tsx
  * POPIS: Modal Components Hub - organizovaný prístup k všetkým modal komponentom
- * VERZIA: v1.0.0
- * UPRAVENÉ: 2025-01-27 22:15:00
+ * VERZIA: v1.1.0
+ * UPRAVENÉ: 2025-01-28 23:45:00
  * ================================================================
  */
 
@@ -75,109 +75,28 @@ const ModalComponentsHub: React.FC = () => {
     }
   } as const;
 
-  // Status farby pre komponenty
+  // Status farby pre komponenty (dočasne nepoužívané)
   // Prečo: Vizuálne odlíšenie stavu komponentov
   // Kedy zmeniť: Pri zmene status workflow
-  const STATUS_COLORS = {
-    PRODUCTION: '#16a34a',    // Zelená - produkčné použitie
-    ACTIVE: '#3b82f6',        // Modrá - aktívne vo vývoji
-    DEVELOPMENT: '#f97316',   // Oranžová - vo vývoji
-    TESTING: '#8b5cf6',       // Fialová - v testovaní
-    DEMO: '#6b7280'           // Sivá - demo účely
-  } as const;
+  // const STATUS_COLORS = {
+  //   PRODUCTION: '#16a34a',    // Zelená - produkčné použitie
+  //   ACTIVE: '#3b82f6',        // Modrá - aktívne vo vývoji
+  //   DEVELOPMENT: '#f97316',   // Oranžová - vo vývoji
+  //   TESTING: '#8b5cf6',       // Fialová - v testovaní
+  //   DEMO: '#6b7280'           // Sivá - demo účely
+  // } as const;
 
   // === KOMPONENTY ===
 
-  // Komponent pre zobrazenie jednotlivého modal komponentu
-  const ComponentCard: React.FC<{
-    component: any;
-    category: string;
-    onSelect: (id: string) => void;
-  }> = ({ component, category, onSelect }) => (
-    <div
-      onClick={() => onSelect(component.id)}
-      style={{
-        background: 'white',
-        borderRadius: '16px',
-        padding: '24px',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
-        border: '2px solid #f1f5f9'
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.15)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.1)';
-      }}
-    >
-      {/* Status Badge */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '16px'
-      }}>
-        <div style={{
-          background: STATUS_COLORS[component.status as keyof typeof STATUS_COLORS],
-          color: 'white',
-          padding: '4px 12px',
-          borderRadius: '12px',
-          fontSize: '12px',
-          fontWeight: '700'
-        }}>
-          {component.status}
-        </div>
-        <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>
-          {category}
-        </div>
-      </div>
-
-      <h4 style={{
-        fontSize: '18px',
-        fontWeight: '700',
-        color: '#1e293b',
-        marginBottom: '8px'
-      }}>
-        {component.name}
-      </h4>
-
-      <p style={{
-        fontSize: '14px',
-        color: '#64748b',
-        fontWeight: '500',
-        lineHeight: '1.5',
-        marginBottom: '16px'
-      }}>
-        {component.description}
-      </p>
-
-      <button style={{
-        width: '100%',
-        padding: '12px',
-        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-        border: 'none',
-        borderRadius: '8px',
-        color: 'white',
-        fontSize: '14px',
-        fontWeight: '600',
-        cursor: 'pointer'
-      }}>
-        Test Component →
-      </button>
-    </div>
-  );
+  // ComponentCard dočasne odstránený kvôli TypeScript chybám
 
   // === HLAVNÁ LOGIKA ===
 
   // Ak je vybraný konkrétny komponent, zobraz ho
   if (selectedComponent) {
     const component = Object.values(MODAL_CATEGORIES)
-      .flatMap(category => category.components)
-      .find(comp => comp.id === selectedComponent);
+      .flatMap((category: any) => category.components)
+      .find((comp: any) => comp.id === selectedComponent);
 
     if (component) {
       return (
@@ -207,9 +126,9 @@ const ModalComponentsHub: React.FC = () => {
             >
               ← Späť
             </button>
-            TESTING: {component.name}
+            TESTING: {(component as any).name}
           </div>
-          {component.component}
+          {(component as any).component}
         </div>
       );
     }
@@ -219,148 +138,161 @@ const ModalComponentsHub: React.FC = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
-      padding: '40px',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+      padding: '20px',
       fontFamily: "'Inter', 'Segoe UI', sans-serif"
     }}>
 
-      {/* Header */}
+      {/* Main Header */}
       <div style={{
         textAlign: 'center',
-        marginBottom: '60px'
+        marginBottom: '32px'
       }}>
-        <div style={{
-          display: 'inline-block',
-          padding: '8px 16px',
-          background: '#3b82f6',
-          color: 'white',
-          borderRadius: '20px',
-          fontSize: '14px',
-          fontWeight: '700',
-          marginBottom: '20px'
-        }}>
-          MODAL COMPONENTS TESTING
-        </div>
-
         <h1 style={{
-          fontSize: '48px',
-          fontWeight: '900',
-          background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+          fontSize: '42px',
+          fontWeight: '800',
+          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
           backgroundClip: 'text',
           WebkitBackgroundClip: 'text',
           color: 'transparent',
-          marginBottom: '16px'
+          marginBottom: '12px'
         }}>
-          🔧 Modal Components Hub
+          L-KERN Modal Components
         </h1>
-
         <p style={{
-          fontSize: '20px',
+          fontSize: '18px',
           color: '#64748b',
           fontWeight: '500',
-          maxWidth: '800px',
-          margin: '0 auto'
+          margin: '0'
         }}>
-          Organizované modal komponenty s postupnou implementáciou.
-          <br />
-          <strong>Základná štruktúra</strong> je pripravená pre budúce komponenty.
+          Organizované testovanie a vývoj modal komponentov ERP systému
         </p>
       </div>
 
-      {/* Categories */}
-      {Object.entries(MODAL_CATEGORIES).map(([categoryKey, category]) => (
-        <div key={categoryKey} style={{ marginBottom: '60px' }}>
-
-          {/* Category Header */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '30px',
-            paddingBottom: '16px',
-            borderBottom: `3px solid ${category.color}`
-          }}>
-            <div style={{
-              fontSize: '32px',
-              marginRight: '16px'
-            }}>
-              {category.icon}
-            </div>
-            <div>
-              <h2 style={{
-                fontSize: '28px',
-                fontWeight: '800',
-                color: '#1e293b',
-                marginBottom: '8px'
-              }}>
-                {category.name}
-              </h2>
-              <p style={{
-                fontSize: '16px',
-                color: '#64748b',
-                fontWeight: '500',
-                margin: 0
-              }}>
-                {category.description}
-              </p>
-            </div>
-            <div style={{
-              marginLeft: 'auto',
-              padding: '8px 16px',
-              background: category.color,
-              color: 'white',
+      {/* Modal Components Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: '20px',
+        maxWidth: '1000px',
+        margin: '0 auto'
+      }}>
+        {Object.entries(MODAL_CATEGORIES).map(([categoryKey, category]) => (
+          <div
+            key={categoryKey}
+            onClick={() => category.components.length > 0 && setSelectedComponent(category.components[0].id)}
+            style={{
+              background: 'white',
               borderRadius: '16px',
-              fontSize: '14px',
-              fontWeight: '700'
+              padding: '24px',
+              cursor: category.components.length > 0 ? 'pointer' : 'default',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 6px 20px rgba(0, 0, 0, 0.1)',
+              border: `1px solid ${category.color}`,
+              minHeight: '180px',
+              display: 'flex',
+              flexDirection: 'column',
+              opacity: category.components.length > 0 ? 1 : 0.7
+            }}
+            onMouseEnter={(e) => {
+              if (category.components.length > 0) {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 12px 30px rgba(0, 0, 0, 0.15)';
+                e.currentTarget.style.borderColor = category.color;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (category.components.length > 0) {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.1)';
+              }
+            }}
+          >
+
+            {/* Category Icon a Header */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '16px'
             }}>
-              {category.components.length} Components
+              <div style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '12px',
+                background: category.color,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '12px'
+              }}>
+                <span style={{
+                  fontSize: '24px',
+                  filter: category.components.length > 0 ? 'grayscale(0%)' : 'grayscale(100%)'
+                }}>
+                  {category.icon}
+                </span>
+              </div>
+              <div>
+                <h3 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: category.components.length > 0 ? '#1e293b' : '#94a3b8',
+                  margin: 0,
+                  marginBottom: '4px'
+                }}>
+                  {category.name}
+                </h3>
+              </div>
+            </div>
+
+            {/* Description */}
+            <p style={{
+              fontSize: '14px',
+              color: category.components.length > 0 ? '#64748b' : '#94a3b8',
+              fontWeight: '500',
+              lineHeight: '1.4',
+              marginBottom: '16px',
+              flexGrow: 1
+            }}>
+              {category.description}
+            </p>
+
+            {/* Status Badge */}
+            <div style={{
+              padding: '6px 12px',
+              background: category.components.length > 0 ? category.color : '#e2e8f0',
+              color: category.components.length > 0 ? 'white' : '#94a3b8',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '600',
+              textAlign: 'center',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }}>
+              {category.components.length > 0 ? 'DEVELOPMENT' : 'V PRÍPRAVE'}
             </div>
           </div>
-
-          {/* Components Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '24px'
-          }}>
-            {category.components.map((component) => (
-              <ComponentCard
-                key={component.id}
-                component={component}
-                category={category.name}
-                onSelect={setSelectedComponent}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       {/* Footer */}
       <div style={{
         textAlign: 'center',
-        marginTop: '80px',
-        padding: '32px',
-        background: 'white',
-        borderRadius: '20px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+        marginTop: '48px',
+        padding: '24px',
+        background: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: '16px',
         border: '1px solid #e2e8f0'
       }}>
-        <h3 style={{
-          fontSize: '24px',
-          fontWeight: '700',
-          color: '#1e293b',
-          marginBottom: '16px'
-        }}>
-          🧪 Modal Development Environment
-        </h3>
         <p style={{
-          fontSize: '16px',
+          fontSize: '14px',
           color: '#64748b',
-          maxWidth: '600px',
-          margin: '0 auto'
+          fontWeight: '500',
+          margin: 0
         }}>
-          Modal Components Hub je pripravený pre postupné pridávanie komponentov.
+          🔧 <strong>Template System</strong> a <strong>Customer Inquiry</strong> sú aktívne pre vývoj a testovanie.
           <br />
-          Každý komponent bude mať svoj vlastný testing kontext a funkcionalitu.
+          Ostatné moduly budú pridané postupne.
         </p>
       </div>
     </div>

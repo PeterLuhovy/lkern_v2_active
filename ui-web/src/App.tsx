@@ -3,15 +3,15 @@
  * SÚBOR: App.tsx
  * CESTA: /ui-web/src/App.tsx
  * POPIS: Hlavný App komponent L-KERN ERP systému - organizovaný s novým Testing Hub
- * VERZIA: v3.0.0
- * UPRAVENÉ: 2025-01-27 22:10:00
+ * VERZIA: v3.0.1
+ * UPRAVENÉ: 2025-01-28 23:30:00
  * ================================================================
  */
 
 import './App.css'
 import { useState } from 'react'
-import TestingHub from './testing'
-import { COLORS, SPACING, LAYOUT, TYPOGRAPHY } from './config/constants'
+import TestingDashboard from './testing'
+import { COLORS } from './config/constants'
 
 // === CONSTANTS ===
 
@@ -49,47 +49,7 @@ const ERP_SECTIONS = {
   }
 } as const;
 
-// UI layout hodnoty pre App komponent
-// Prečo: Konzistentné rozostupy a pozicionovanie v hlavnom layout
-// Kedy zmeniť: Pri responsive redesign alebo layout optimalizácii
-const APP_LAYOUT = {
-  // Back button positioning a styling
-  backButton: {
-    position: 'fixed' as const,
-    top: SPACING.xl,                    // 20px od vrchu
-    left: SPACING.xl,                   // 20px zľava
-    zIndex: LAYOUT.zIndex.notification, // Highest priority
-    padding: `${SPACING.md}px ${SPACING.xl}px`, // 12px 20px
-    borderRadius: LAYOUT.borderRadius.lg // 8px zaoblenie
-  },
 
-  // Main content spacing
-  content: {
-    minHeight: '100vh',
-    padding: SPACING.xl,               // 20px všade okolo
-    fontFamily: "'Inter', 'Segoe UI', sans-serif"
-  },
-
-  // Header spacing
-  header: {
-    marginBottom: SPACING.xxl         // 24px pod headerom
-  },
-
-  // Grid layouts
-  grid: {
-    sectionsPerRow: { desktop: 4, tablet: 2, mobile: 1 },
-    gap: SPACING.xxl                  // 24px medzi grid items
-  }
-} as const;
-
-// Background gradients pre rôzne sekcie
-// Prečo: Vizuálne odlíšenie sekcií a estetický vzhľad
-// Kedy zmeniť: Pri visual refresh alebo brand aktualizácii
-const BACKGROUND_GRADIENTS = {
-  main: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',      // Jemný sivý gradient
-  testing: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',   // Identický s main
-  primary: `linear-gradient(135deg, ${COLORS.brand.accent} 0%, ${COLORS.brand.primary} 100%)` // Brand gradient
-} as const;
 
 function App() {
   const [selectedSection, setSelectedSection] = useState<string>('');
@@ -164,25 +124,7 @@ function App() {
   if (selectedSection === 'testing') {
     return (
       <div>
-        <button
-          onClick={() => setSelectedSection('')}
-          style={{
-            position: APP_LAYOUT.backButton.position,
-            top: APP_LAYOUT.backButton.top,
-            left: APP_LAYOUT.backButton.left,
-            zIndex: APP_LAYOUT.backButton.zIndex,
-            padding: APP_LAYOUT.backButton.padding,
-            background: COLORS.brand.primary,
-            color: COLORS.neutral.white,
-            border: 'none',
-            borderRadius: APP_LAYOUT.backButton.borderRadius,
-            cursor: 'pointer',
-            fontWeight: TYPOGRAPHY.fontWeight.bold
-          }}
-        >
-          ← Späť na Dashboard
-        </button>
-        <TestingHub />
+        <TestingDashboard />
       </div>
     );
   }

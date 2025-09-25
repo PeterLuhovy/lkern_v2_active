@@ -2,75 +2,87 @@
  * ================================================================
  * SÚBOR: index.tsx
  * CESTA: /ui-web/src/testing/index.tsx
- * POPIS: L-KERN Testing Dashboard - IDENTICKÉ ROZLOŽENIE AKO HLAVNÝ DASHBOARD
- * VERZIA: v2.3.0
- * UPRAVENÉ: 2025-01-28 23:45:00
+ * POPIS: Testing Hub Dashboard - PRESNE AKO HLAVNÝ DASHBOARD
+ * VERZIA: v2.0.0
+ * UPRAVENÉ: 2025-01-27 23:00:00
  * ================================================================
  */
 
 import React, { useState } from 'react';
 import DesignExamples from './design-examples';
 import ModalComponentsHub from './modal-components';
-import PagesDashboard from './pages-dashboard';
-import DebugList from '../components/shared/ProfessionalDebugSystem';
 
-type TestingSection = 'home' | 'design-examples' | 'modal-components' | 'pages-dashboard';
+type TestingSection = 'home' | 'design-examples' | 'modal-components';
 
-const TestingDashboard: React.FC = () => {
-  const [selectedSection, setSelectedSection] = useState<TestingSection>('home');
+const TestingHub: React.FC = () => {
+  const [currentSection, setCurrentSection] = useState<TestingSection>('home');
 
+  // === CONSTANTS ===
+
+  // Back button pre návrat do Testing Hub
+  const BackButton: React.FC<{ onClick: () => void; label: string }> = ({ onClick, label }) => (
+    <button
+      onClick={onClick}
+      style={{
+        position: 'fixed',
+        top: '20px',
+        left: '20px',
+        zIndex: 1000,
+        padding: '12px 20px',
+        borderRadius: '8px',
+        background: 'rgba(0,0,0,0.8)',
+        color: 'white',
+        border: 'none',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        cursor: 'pointer'
+      }}
+    >
+      ← {label}
+    </button>
+  );
+
+  // === HLAVNÁ LOGIKA ===
 
   // Routing logic pre jednotlivé sekcie
-  if (selectedSection === 'design-examples') {
+  if (currentSection === 'design-examples') {
     return (
       <div>
-        <DebugList
-          pageName="Design Examples"
-          pagePath="/ui-web/src/testing/design-examples/index.tsx"
+        <BackButton
+          onClick={() => setCurrentSection('home')}
+          label="Testing Hub"
         />
         <DesignExamples />
       </div>
     );
   }
 
-  if (selectedSection === 'pages-dashboard') {
+  if (currentSection === 'modal-components') {
     return (
       <div>
-        <DebugList
-          pageName="Pages Dashboard"
-          pagePath="/ui-web/src/testing/pages-dashboard/index.tsx"
-        />
-        <PagesDashboard />
-      </div>
-    );
-  }
-
-  if (selectedSection === 'modal-components') {
-    return (
-      <div>
-        <DebugList
-          pageName="Modal Components"
-          pagePath="/ui-web/src/testing/modal-components/index.tsx"
+        <BackButton
+          onClick={() => setCurrentSection('home')}
+          label="Testing Hub"
         />
         <ModalComponentsHub />
       </div>
     );
   }
 
-  // Testing Dashboard sekcie - IDENTICKÉ AKO HLAVNÝ DASHBOARD
+  // Testing Hub Dashboard - PRESNE AKO HLAVNÝ DASHBOARD
   const testingSections = [
     {
       id: 'design-examples',
-      name: '📄 Design Examples',
-      description: 'Kolekcia webstránok a komponentov pre testovanie',
-      status: 'AKTÍVNE',
-      color: '#0ea5e9'
+      name: '🎨 Design Examples',
+      description: 'Finálny dizajn + archívne varianty Orders systému',
+      status: 'PRODUCTION',
+      color: '#16a34a'
     },
     {
       id: 'modal-components',
       name: '🔧 Modal Components',
       description: 'Testovanie a vývoj modal komponentov',
-      status: 'AKTÍVNE',
+      status: 'DEVELOPMENT',
       color: '#3b82f6'
     },
     {
@@ -86,38 +98,9 @@ const TestingDashboard: React.FC = () => {
       description: 'Analýza výkonu a optimalizácia komponentov',
       status: 'V PRÍPRAVE',
       color: '#8b5cf6'
-    },
-    {
-      id: 'automation',
-      name: '🤖 Automation',
-      description: 'Automatizované testovanie a CI/CD pipeline',
-      status: 'V PRÍPRAVE',
-      color: '#10b981'
-    },
-    {
-      id: 'integration',
-      name: '🔗 Integration',
-      description: 'Testovanie integrácie medzi mikroslužbami',
-      status: 'V PRÍPRAVE',
-      color: '#f97316'
-    },
-    {
-      id: 'security',
-      name: '🛡️ Security',
-      description: 'Bezpečnostné testovanie a penetračné testy',
-      status: 'V PRÍPRAVE',
-      color: '#dc2626'
-    },
-    {
-      id: 'docs',
-      name: '📚 Documentation',
-      description: 'Technická dokumentácia a návody',
-      status: 'V PRÍPRAVE',
-      color: '#7c3aed'
     }
   ];
 
-  // Hlavný Testing Dashboard - PRESNÁ KÓPIA ROZLOŽENIA Z App.tsx
   return (
     <div style={{
       minHeight: '100vh',
@@ -126,12 +109,7 @@ const TestingDashboard: React.FC = () => {
       fontFamily: "'Inter', 'Segoe UI', sans-serif"
     }}>
 
-      <DebugList
-        pageName="L-KERN Testing Dashboard (Main)"
-        pagePath="/ui-web/src/testing/index.tsx"
-      />
-
-      {/* Main Header */}
+      {/* Main Header - PRESNE AKO HLAVNÝ DASHBOARD */}
       <div style={{
         textAlign: 'center',
         marginBottom: '32px'
@@ -139,13 +117,13 @@ const TestingDashboard: React.FC = () => {
         <h1 style={{
           fontSize: '42px',
           fontWeight: '800',
-          background: 'linear-gradient(135deg, #9c27b0 0%, #3366cc 100%)',
+          background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
           backgroundClip: 'text',
           WebkitBackgroundClip: 'text',
           color: 'transparent',
           marginBottom: '12px'
         }}>
-          L-KERN Testing Dashboard
+          L-KERN Testing Hub
         </h1>
         <p style={{
           fontSize: '18px',
@@ -153,11 +131,11 @@ const TestingDashboard: React.FC = () => {
           fontWeight: '500',
           margin: '0'
         }}>
-          Professional Testing Environment for ERP Development
+          Organizované testovanie a vývoj komponentov ERP systému
         </p>
       </div>
 
-      {/* Testing Sections Grid */}
+      {/* Testing Sections Grid - PRESNE AKO HLAVNÝ DASHBOARD */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
@@ -170,7 +148,7 @@ const TestingDashboard: React.FC = () => {
             key={section.id}
             onClick={() => {
               if (section.id === 'design-examples' || section.id === 'modal-components') {
-                setSelectedSection(section.id as TestingSection);
+                setCurrentSection(section.id as TestingSection);
               } else {
                 alert(`${section.name} - ${section.status}`);
               }
@@ -203,7 +181,7 @@ const TestingDashboard: React.FC = () => {
             }}
           >
 
-            {/* Section Icon a Header */}
+            {/* Section Icon a Header - PRESNE AKO HLAVNÝ DASHBOARD */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -239,7 +217,7 @@ const TestingDashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Description */}
+            {/* Description - PRESNE AKO HLAVNÝ DASHBOARD */}
             <p style={{
               fontSize: '14px',
               color: (section.id === 'design-examples' || section.id === 'modal-components') ? '#64748b' : '#94a3b8',
@@ -251,7 +229,7 @@ const TestingDashboard: React.FC = () => {
               {section.description}
             </p>
 
-            {/* Status Badge */}
+            {/* Status Badge - PRESNE AKO HLAVNÝ DASHBOARD */}
             <div style={{
               padding: '6px 12px',
               background: (section.id === 'design-examples' || section.id === 'modal-components') ? section.color : '#e2e8f0',
@@ -269,7 +247,7 @@ const TestingDashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Footer */}
+      {/* Footer - PRESNE AKO HLAVNÝ DASHBOARD */}
       <div style={{
         textAlign: 'center',
         marginTop: '48px',
@@ -286,11 +264,11 @@ const TestingDashboard: React.FC = () => {
         }}>
           🧪 <strong>Design Examples</strong> a <strong>Modal Components</strong> sú aktívne pre vývoj a testovanie.
           <br />
-          Ostatné testové moduly budú pridané postupne.
+          Ostatné moduly budú pridané postupne.
         </p>
       </div>
     </div>
   );
 };
 
-export default TestingDashboard;
+export default TestingHub;
