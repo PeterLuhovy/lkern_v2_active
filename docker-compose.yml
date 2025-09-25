@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   # Frontend - React TypeScript
@@ -7,11 +6,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./ui-web/src:/app/src
-      - ./ui-web/public:/app/public
-      - ./ui-web/package.json:/app/package.json
-      - ./ui-web/vite.config.ts:/app/vite.config.ts
-      - ./ui-web/tsconfig.json:/app/tsconfig.json
+      - ./ui-web:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
@@ -22,7 +17,7 @@ services:
 
   # Backend API (placeholder pre budúcnosť)
   backend:
-    image: node:18-alpine
+    image: node:lts-alpine
     command: sh -c "echo 'Backend placeholder - L-KERN v2' && sleep infinity"
     ports:
       - "8000:8000"

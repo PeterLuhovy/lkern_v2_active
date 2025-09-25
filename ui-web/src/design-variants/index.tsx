@@ -1,17 +1,20 @@
-import './App.css'
-import { useState } from 'react'
-import OrdersVariant1 from './design-variants/OrdersVariant1'
-import OrdersVariant2 from './design-variants/OrdersVariant2'
-import OrdersVariant3 from './design-variants/OrdersVariant3'
-import OrdersVariant4 from './design-variants/OrdersVariant4'
-import OrdersVariant5 from './design-variants/OrdersVariant5'
-import OrdersVariant6 from './design-variants/OrdersVariant6'
-import OrdersVariant7 from './design-variants/OrdersVariant7'
-import OrdersVariant8 from './design-variants/OrdersVariant8'
-import OrdersVariant9 from './design-variants/OrdersVariant9'
+/**
+ * Design Variants Index
+ * Showcase pre všetkých 9 dizajnových variantov L-KERN Orders systému
+ */
+import React, { useState } from 'react';
+import OrdersVariant1 from './OrdersVariant1';
+import OrdersVariant2 from './OrdersVariant2';
+import OrdersVariant3 from './OrdersVariant3';
+import OrdersVariant4 from './OrdersVariant4';
+import OrdersVariant5 from './OrdersVariant5';
+import OrdersVariant6 from './OrdersVariant6';
+import OrdersVariant7 from './OrdersVariant7';
+import OrdersVariant8 from './OrdersVariant8';
+import OrdersVariant9 from './OrdersVariant9';
 
-function App() {
-  const [selectedVariant, setSelectedVariant] = useState<number>(0);
+const DesignVariants: React.FC = () => {
+  const [selectedVariant, setSelectedVariant] = useState<number>(1);
 
   const variants = [
     {
@@ -52,22 +55,22 @@ function App() {
     {
       id: 6,
       name: "L-KERN Professional",
-      description: "Technický dizajn inšpirovaný systémom v1 a L-KERN brand",
-      colors: ["#9c27b0", "#3366cc", "#f2f3f7", "#2a2a2a"],
+      description: "Profesionálny enterprise dizajn s L-KERN branding",
+      colors: ["#222222", "#9c27b0", "#3366cc", "#f2f3f7"],
       component: <OrdersVariant6 />
     },
     {
       id: 7,
-      name: "Dark Professional Pro",
-      description: "Tmavý profesionálny dizajn s logami a advanced filtering",
-      colors: ["#1c1c2e", "#26263a", "#9c27b0", "#3366cc"],
+      name: "Variant 7",
+      description: "Dizajnový variant číslo 7",
+      colors: ["#333333", "#666666", "#999999", "#cccccc"],
       component: <OrdersVariant7 />
     },
     {
       id: 8,
-      name: "Perfect Fusion",
-      description: "Funkcionalita v7 s kompletným dizajnom a farbami v6",
-      colors: ["#f2f3f7", "#ffffff", "#9c27b0", "#3366cc"],
+      name: "Variant 8",
+      description: "Dizajnový variant číslo 8",
+      colors: ["#444444", "#777777", "#aaaaaa", "#dddddd"],
       component: <OrdersVariant8 />
     },
     {
@@ -81,29 +84,7 @@ function App() {
 
   if (selectedVariant > 0) {
     const variant = variants.find(v => v.id === selectedVariant);
-    return (
-      <div>
-        <button
-          onClick={() => setSelectedVariant(0)}
-          style={{
-            position: 'fixed',
-            top: '20px',
-            left: '20px',
-            zIndex: 9999,
-            padding: '10px 20px',
-            background: '#9c27b0',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: 'bold'
-          }}
-        >
-          ← Späť na výber
-        </button>
-        {variant ? variant.component : null}
-      </div>
-    );
+    return variant ? variant.component : null;
   }
 
   return (
@@ -138,7 +119,7 @@ function App() {
           margin: '0 auto'
         }}>
           9 profesionálnych dizajnov pre Orders systém zameraných na rôzne odvetvia:
-          Space, Medical, Military, Nuclear, Corporate, L-KERN Professional, Dark Pro, Perfect Fusion a StatusBar Integration
+          Space, Medical, Military, Nuclear, Corporate a L-KERN Enterprise riešenia
         </p>
       </div>
 
@@ -223,9 +204,9 @@ function App() {
               }}>
                 {[
                   'Responsive Design',
+                  'Dark/Light Theme',
                   'Interactive Tables',
-                  'Modern UI',
-                  'Industry Themed'
+                  'Modern UI'
                 ].map((feature, idx) => (
                   <span
                     key={idx}
@@ -292,6 +273,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
-export default App
+export default DesignVariants;
