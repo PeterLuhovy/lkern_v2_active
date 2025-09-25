@@ -1,0 +1,235 @@
+/*
+ * ================================================================
+ * SÚBOR: variables.css
+ * CESTA: /ui-web/src/styles/variables.css
+ * POPIS: CSS custom properties pre celý L-KERN design system - centralizácia všetkých hodnôt
+ * VERZIA: v1.0.0
+ * UPRAVENÉ: 2024-09-25 15:35:00
+ * ================================================================
+ */
+
+/* === CSS CUSTOM PROPERTIES === */
+
+:root {
+  /* === SPACING SYSTEM === */
+  /* 8px grid systém pre konzistentné rozostupy */
+  /* Prečo: Matematicky konzistentné spacing pre visual harmony */
+  /* Kedy zmeniť: Pri major design system refactore */
+
+  --spacing-xs: 4px;      /* 0.25rem - micro spacing */
+  --spacing-sm: 8px;      /* 0.5rem - malé rozostupy */
+  --spacing-md: 12px;     /* 0.75rem - štandardný gap */
+  --spacing-lg: 16px;     /* 1rem - sekčné rozostupy */
+  --spacing-xl: 20px;     /* 1.25rem - veľké rozostupy */
+  --spacing-xxl: 24px;    /* 1.5rem - hlavné rozostupy */
+  --spacing-xxxl: 32px;   /* 2rem - najväčšie rozostupy */
+  --spacing-huge: 40px;   /* 2.5rem - extra veľké pre desktop */
+
+  /* === BRAND COLORS === */
+  /* L-KERN brand identity farby */
+  /* Prečo: Konzistentná brand identity naprieč aplikáciou */
+  /* Kedy zmeniť: Pri oficial rebrandingu alebo marketing zmenách */
+
+  --color-primary: #9c27b0;      /* Hlavná fialová brand farba */
+  --color-primary-dark: #5e1065; /* Tmavšia verzia pre hover */
+  --color-primary-light: #ce93d8; /* Svetlejšia verzia pre backgrounds */
+  --color-secondary: #3366cc;    /* Modrá sekundárna farba */
+  --color-accent: #E91E63;       /* Ružová accent farba */
+
+  /* === STATUS COLORS === */
+  /* UI state farby pre konzistentné feedback */
+  /* Prečo: Immediate visual feedback pre user actions */
+  /* Kedy zmeniť: Pri accessibility audit alebo UX testing */
+
+  --color-success: #4CAF50;      /* Zelená pre úspešné akcie */
+  --color-success-light: #C8E6C9; /* Svetlá verzia pre backgrounds */
+  --color-success-dark: #2E7D32; /* Tmavá verzia pre borders */
+
+  --color-warning: #FF9800;      /* Oranžová pre upozornenia */
+  --color-warning-light: #FFE0B2; /* Svetlá verzia pre backgrounds */
+  --color-warning-dark: #F57C00; /* Tmavá verzia pre borders */
+
+  --color-error: #f44336;        /* Červená pre chyby */
+  --color-error-light: #FFCDD2;  /* Svetlá verzia pre backgrounds */
+  --color-error-dark: #D32F2F;   /* Tmavá verzia pre borders */
+
+  --color-info: #2196F3;         /* Modrá pre informácie */
+  --color-info-light: #BBDEFB;   /* Svetlá verzia pre backgrounds */
+  --color-info-dark: #1976D2;    /* Tmavá verzia pre borders */
+
+  /* === PRIORITY COLORS === */
+  /* Farby pre priority levels objednávok a úloh */
+  /* Prečo: Visual hierarchy pre business priority system */
+  /* Kedy zmeniť: Pri zmene business workflow alebo priority systému */
+
+  --color-priority-nizka: #9E9E9E;        /* Sivá - nízka priorita */
+  --color-priority-normalna: #2196F3;     /* Modrá - normálna priorita */
+  --color-priority-stredna: #FF9800;      /* Oranžová - stredná priorita */
+  --color-priority-rychla: #FF5722;       /* Červeno-oranžová - rýchla */
+  --color-priority-extra-rychla: #f44336; /* Červená - kritická priorita */
+
+  /* === NEUTRAL COLORS === */
+  /* Gray scale pre text, borders, backgrounds */
+  /* Prečo: Konzistentný neutral color system pre hierarchy */
+  /* Kedy zmeniť: Pri contrast ratio optimalizácii alebo dark theme */
+
+  --color-white: #ffffff;
+  --color-gray-50: #fafafa;      /* Page backgrounds */
+  --color-gray-100: #f5f5f5;     /* Card backgrounds */
+  --color-gray-200: #eeeeee;     /* Borders, dividers */
+  --color-gray-300: #e0e0e0;     /* Inactive borders */
+  --color-gray-400: #bdbdbd;     /* Placeholder text */
+  --color-gray-500: #9e9e9e;     /* Secondary text */
+  --color-gray-600: #757575;     /* Primary text */
+  --color-gray-700: #616161;     /* Headers */
+  --color-gray-800: #424242;     /* High contrast text */
+  --color-gray-900: #212121;     /* Maximum contrast */
+  --color-black: #000000;
+
+  /* === TYPOGRAPHY === */
+  /* Font system pre konzistentné text sizing */
+  /* Prečo: Typographic hierarchy a čitateľnosť */
+  /* Kedy zmeniť: Pri accessibility requirements alebo font system zmene */
+
+  /* Font sizes */
+  --font-size-xs: 10px;     /* Badges, timestamps */
+  --font-size-sm: 12px;     /* Helper text, captions */
+  --font-size-md: 14px;     /* Body text, inputs, labels */
+  --font-size-lg: 16px;     /* Important text, headings */
+  --font-size-xl: 18px;     /* Section headings */
+  --font-size-xxl: 24px;    /* H2 headings, modal titles */
+  --font-size-xxxl: 32px;   /* H1 headings, page titles */
+  --font-size-huge: 40px;   /* Hero text */
+
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Line heights */
+  --line-height-tight: 1.25;    /* Headings */
+  --line-height-normal: 1.5;    /* Body text */
+  --line-height-relaxed: 1.75;  /* Long form content */
+
+  /* === LAYOUT === */
+  /* Border radius system pre konzistentné zaoblenie */
+  /* Prečo: Visual consistency v UI elementoch */
+  /* Kedy zmeniť: Pri design language zmenách */
+
+  --border-radius-none: 0;
+  --border-radius-sm: 4px;      /* Buttons, inputs */
+  --border-radius-md: 6px;      /* Cards, containers */
+  --border-radius-lg: 8px;      /* Modals, large containers */
+  --border-radius-xl: 12px;     /* Hero elements */
+  --border-radius-round: 50px;  /* Avatars, circular buttons */
+  --border-radius-pill: 9999px; /* Pill buttons, tags */
+
+  /* Z-index system pre layer management */
+  /* Prečo: Konzistentné layering bez konfliktov */
+  /* Kedy zmeniť: Pri pridávaní nových overlay komponentov */
+
+  --z-index-hide: -1;
+  --z-index-base: 0;
+  --z-index-dropdown: 100;
+  --z-index-sticky: 200;
+  --z-index-modal: 1000;
+  --z-index-popover: 1100;
+  --z-index-notification: 9999;
+
+  /* Container max widths pre responsive design */
+  /* Prečo: Optimálne content width pre čitateľnosť */
+  /* Kedy zmeniť: Pri responsive layout redesign */
+
+  --max-width-form: 600px;      /* Forms, modals */
+  --max-width-content: 800px;   /* Content areas */
+  --max-width-page: 1200px;     /* Full page layouts */
+  --max-width-wide: 1400px;     /* Dashboard layouts */
+
+  /* === SHADOWS === */
+  /* Box shadow system pre depth a elevation */
+  /* Prečo: Konsistentný material design elevation system */
+  /* Kedy zmeniť: Pri visual design refresh */
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);           /* Subtle elevation */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);            /* Small cards */
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);            /* Standard cards */
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);          /* Modals, popovers */
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);          /* High elevation */
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);        /* Maximum elevation */
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);   /* Inset shadow */
+
+  /* === TRANSITIONS === */
+  /* Animation timing pre smooth interactions */
+  /* Prečo: Konzistentné animation feel naprieč UI */
+  /* Kedy zmeniť: Pri performance optimalizácii alebo UX testing */
+
+  --transition-fast: 150ms ease-in-out;    /* Hover efekty */
+  --transition-normal: 300ms ease-in-out;  /* Standard transitions */
+  --transition-slow: 500ms ease-in-out;    /* Page transitions */
+  --transition-lazy: 1000ms ease-in-out;   /* Emphasis animations */
+
+  /* Easing functions */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* === BREAKPOINTS === */
+  /* Media query breakpoints pre responsive design */
+  /* Prečo: Mobile-first responsive design approach */
+  /* Kedy zmeniť: Pri responsive strategy zmenách */
+
+  /* Note: CSS custom properties nepodporujú media queries directly */
+  /* Tieto hodnoty su dokumentované pre JavaScript import */
+  /* --breakpoint-mobile: 480px; */
+  /* --breakpoint-tablet: 768px; */
+  /* --breakpoint-desktop: 1024px; */
+  /* --breakpoint-wide: 1440px; */
+}
+
+/* === DARK THEME SUPPORT === */
+/* Pripravené pre budúce dark theme implementáciu */
+/* Prečo: Accessibility a user preference support */
+/* Kedy aktivovať: Pri implementácii theme switchera */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark theme overrides budú pridané neskôr */
+    /* --color-primary: #bb86fc; */
+    /* --color-background: #121212; */
+    /* --color-surface: #1e1e1e; */
+  }
+}
+
+/* === HIGH CONTRAST MODE === */
+/* Accessibility support pre high contrast preferences */
+/* Prečo: WCAG compliance a accessibility requirements */
+/* Kedy zmeniť: Pri accessibility audit */
+
+@media (prefers-contrast: high) {
+  :root {
+    /* High contrast overrides */
+    --shadow-xs: 0 0 0 1px var(--color-gray-900);
+    --shadow-sm: 0 0 0 1px var(--color-gray-900);
+    --shadow-md: 0 0 0 2px var(--color-gray-900);
+    --shadow-lg: 0 0 0 2px var(--color-gray-900);
+  }
+}
+
+/* === REDUCED MOTION === */
+/* Accessibility support pre users who prefer reduced motion */
+/* Prečo: Vestibular disorders a motion sensitivity */
+/* Kedy zmeniť: Pri accessibility compliance review */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    /* Reduced motion overrides */
+    --transition-fast: none;
+    --transition-normal: none;
+    --transition-slow: none;
+    --transition-lazy: none;
+  }
+}

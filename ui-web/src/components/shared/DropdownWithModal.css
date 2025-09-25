@@ -1,0 +1,332 @@
+/*
+ * ================================================================
+ * SÚBOR: DropdownWithModal.css
+ * CESTA: /ui-web/src/components/shared/DropdownWithModal.css
+ * POPIS: CSS styling pre DropdownWithModal komponent - dropdown s modal integráciou
+ * VERZIA: v1.0.0
+ * UPRAVENÉ: 2024-12-25 14:35:00
+ * ================================================================
+ */
+
+/* === ZÁKLADNÝ CONTAINER === */
+.dropdown-with-modal {
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* === LABEL === */
+.dropdown-with-modal__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--theme-text);
+}
+
+.dropdown-with-modal__label .required {
+  color: #f44336;
+  margin-left: 2px;
+}
+
+/* === DROPDOWN BUTTON === */
+.dropdown-with-modal__button {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--theme-input-background);
+  border: 2px solid var(--theme-input-border);
+  border-radius: 6px;
+  color: var(--theme-text);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.dropdown-with-modal__button:hover:not(:disabled) {
+  border-color: #2196F3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-with-modal__button:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.dropdown-with-modal__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f5f5f5;
+}
+
+/* === SELECTED CONTENT === */
+.dropdown-with-modal__selected {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-with-modal__selected .placeholder {
+  color: var(--theme-text-secondary);
+  opacity: 0.7;
+}
+
+/* === ARROW === */
+.dropdown-with-modal__arrow {
+  font-size: 12px;
+  color: var(--theme-text-secondary);
+  transition: transform 0.2s ease;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.dropdown-with-modal__arrow.expanded {
+  transform: rotate(180deg);
+}
+
+/* === DROPDOWN MENU === */
+.dropdown-with-modal__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--theme-input-background);
+  border: 2px solid var(--theme-input-border);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 300px;
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: dropdownSlideDown 0.2s ease-out;
+}
+
+@keyframes dropdownSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === SEARCH INPUT === */
+.dropdown-with-modal__search {
+  padding: 8px;
+  border-bottom: 1px solid var(--theme-input-border);
+}
+
+.dropdown-with-modal__search-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--theme-input-background);
+  border: 1px solid var(--theme-input-border);
+  border-radius: 4px;
+  color: var(--theme-text);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.dropdown-with-modal__search-input:focus {
+  outline: none;
+  border-color: #2196F3;
+}
+
+/* === ITEMS CONTAINER === */
+.dropdown-with-modal__items {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+/* === DROPDOWN ITEM === */
+.dropdown-with-modal__item {
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  color: var(--theme-text);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+  display: block;
+}
+
+.dropdown-with-modal__item:hover {
+  background-color: var(--theme-hover-background);
+}
+
+.dropdown-with-modal__item:focus {
+  outline: none;
+  background-color: var(--theme-hover-background);
+}
+
+.dropdown-with-modal__item:last-of-type {
+  border-bottom: none;
+}
+
+/* === NO RESULTS === */
+.dropdown-with-modal__no-results {
+  padding: 16px 12px;
+  text-align: center;
+  color: var(--theme-text-secondary);
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* === ADD NEW BUTTON === */
+.dropdown-with-modal__add-new {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  border-top: 2px solid var(--theme-input-border);
+  color: #2196F3;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.dropdown-with-modal__add-new:hover {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(33, 150, 243, 0.05));
+  color: #1976D2;
+}
+
+.dropdown-with-modal__add-new:focus {
+  outline: none;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(33, 150, 243, 0.05));
+}
+
+.dropdown-with-modal__add-icon {
+  font-size: 16px;
+}
+
+.dropdown-with-modal__add-text {
+  font-weight: 600;
+}
+
+/* === STATES === */
+
+/* Open state */
+.dropdown-with-modal.open .dropdown-with-modal__button {
+  border-color: #2196F3;
+  border-radius: 6px 6px 0 0;
+}
+
+/* Disabled state */
+.dropdown-with-modal.disabled .dropdown-with-modal__label {
+  opacity: 0.5;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .dropdown-with-modal__menu {
+    max-height: 250px;
+  }
+
+  .dropdown-with-modal__items {
+    max-height: 190px;
+  }
+
+  .dropdown-with-modal__button {
+    padding: 12px;
+    min-height: 48px;
+  }
+
+  .dropdown-with-modal__item {
+    padding: 12px;
+    font-size: 16px; /* Lepšie pre touch */
+  }
+}
+
+@media (max-width: 480px) {
+  .dropdown-with-modal__menu {
+    left: -4px;
+    right: -4px;
+    border-radius: 0 0 8px 8px;
+  }
+}
+
+/* === ACCESSIBILITY === */
+
+/* Focus states */
+.dropdown-with-modal__button:focus-visible {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
+.dropdown-with-modal__item:focus-visible {
+  outline: 2px solid #2196F3;
+  outline-offset: -2px;
+}
+
+.dropdown-with-modal__add-new:focus-visible {
+  outline: 2px solid #2196F3;
+  outline-offset: -2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .dropdown-with-modal__button {
+    border-width: 3px;
+  }
+
+  .dropdown-with-modal__menu {
+    border-width: 3px;
+  }
+
+  .dropdown-with-modal__item {
+    border-bottom-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-with-modal__arrow {
+    transition: none;
+  }
+
+  .dropdown-with-modal__menu {
+    animation: none;
+  }
+
+  .dropdown-with-modal__button,
+  .dropdown-with-modal__item,
+  .dropdown-with-modal__add-new {
+    transition: none;
+  }
+}
+
+/* === SCROLLBAR STYLING === */
+.dropdown-with-modal__items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-with-modal__items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-with-modal__items::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.dropdown-with-modal__items::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}

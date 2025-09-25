@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backup files - L-KERN automatic backup workflow
+.backup/
+*.backup
+*_backup_*

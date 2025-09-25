@@ -1,0 +1,285 @@
+/*
+ * ================================================================
+ * SÚBOR: TypeSelector.css
+ * CESTA: /ui-web/src/components/shared/TypeSelector.css
+ * POPIS: CSS styling pre TypeSelector komponent - zjednotený type selector pre PRT/ASM
+ * VERZIA: v1.0.0
+ * UPRAVENÉ: 2024-12-25 14:35:00
+ * ================================================================
+ */
+
+/* === ZÁKLADNÝ CONTAINER === */
+.type-selector {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* === HLAVIČKA SEKCIE === */
+.type-selector__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.type-selector__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--theme-text);
+  margin: 0;
+  display: block;
+}
+
+.type-selector__title .required {
+  color: #f44336;
+  margin-left: 2px;
+}
+
+.type-selector__current {
+  font-size: 13px;
+  color: var(--theme-text);
+  background: var(--theme-input-background);
+  border: 1px solid var(--theme-input-border);
+  border-radius: 12px;
+  padding: 2px 8px;
+}
+
+/* === TLAČIDLÁ CONTAINER === */
+.type-selector__buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+/* === TYPE TLAČIDLÁ === */
+.type-selector__button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 2px solid var(--theme-input-border);
+  border-radius: 6px;
+  background: var(--theme-input-background);
+  color: var(--theme-text);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+  min-height: 48px;
+}
+
+.type-selector__button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-color: var(--type-color);
+}
+
+.type-selector__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.type-selector__button.active {
+  background: var(--type-gradient);
+  color: white;
+  border-color: var(--type-color);
+  transform: scale(1.02);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* === IKONY A LABELY === */
+.type-selector__icon {
+  font-size: 18px;
+  display: inline-block;
+}
+
+.type-selector__label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* === POPIS TYPU === */
+.type-selector__description {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.type-selector__description small {
+  color: var(--theme-text);
+  opacity: 0.7;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* === POMOCNÝ TEXT === */
+.type-selector__help {
+  background: var(--theme-input-background);
+  border: 1px solid var(--theme-input-border);
+  border-radius: 6px;
+  padding: 8px;
+  margin-top: 8px;
+}
+
+.type-selector__help small {
+  color: var(--theme-text);
+  opacity: 0.8;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* === VEĽKOSTI === */
+
+/* Small size */
+.type-selector--small .type-selector__button {
+  padding: 8px 16px;
+  font-size: 12px;
+  gap: 6px;
+  min-height: 40px;
+}
+
+.type-selector--small .type-selector__icon {
+  font-size: 16px;
+}
+
+.type-selector--small .type-selector__title {
+  font-size: 13px;
+}
+
+/* Medium size (default) */
+.type-selector--medium .type-selector__button {
+  padding: 10px 20px;
+  font-size: 14px;
+  gap: 8px;
+  min-height: 48px;
+}
+
+.type-selector--medium .type-selector__icon {
+  font-size: 18px;
+}
+
+/* Large size */
+.type-selector--large .type-selector__button {
+  padding: 12px 24px;
+  font-size: 16px;
+  gap: 10px;
+  min-height: 56px;
+}
+
+.type-selector--large .type-selector__icon {
+  font-size: 20px;
+}
+
+.type-selector--large .type-selector__title {
+  font-size: 16px;
+}
+
+/* === ŠPECIFICKÉ TYPE FARBY === */
+
+/* PRT typ - zelená */
+.type-selector__button.type-prt.active {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  border-color: #4CAF50;
+}
+
+.type-selector__button.type-prt:hover:not(.active):not(:disabled) {
+  border-color: #4CAF50;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(46, 125, 50, 0.05));
+}
+
+/* ASM typ - oranžová */
+.type-selector__button.type-asm.active {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+  border-color: #FF9800;
+}
+
+.type-selector__button.type-asm:hover:not(.active):not(:disabled) {
+  border-color: #FF9800;
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(245, 124, 0, 0.05));
+}
+
+/* === RESPONSÍVNY DESIGN === */
+@media (max-width: 768px) {
+  .type-selector__buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .type-selector__button {
+    width: 100%;
+  }
+
+  .type-selector__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .type-selector__current {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .type-selector__button {
+    padding: 12px 16px;
+    min-height: 52px;
+  }
+
+  .type-selector__label {
+    font-size: 13px;
+  }
+
+  .type-selector__icon {
+    font-size: 16px;
+  }
+}
+
+/* === ACCESSIBILITY === */
+.type-selector__button:focus {
+  outline: 2px solid var(--type-color, #2196F3);
+  outline-offset: 2px;
+}
+
+.type-selector__button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Klávesová navigácia */
+.type-selector__button:focus-visible {
+  outline: 2px solid var(--type-color, #2196F3);
+  outline-offset: 2px;
+}
+
+/* === ANIMÁCIE === */
+@keyframes typeSelect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1.02);
+  }
+}
+
+.type-selector__button.active {
+  animation: typeSelect 0.3s ease-out;
+}
+
+/* Hover animácia */
+@keyframes typeHover {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-1px);
+  }
+}
+
+.type-selector__button:hover:not(:disabled):not(.active) {
+  animation: typeHover 0.2s ease-out forwards;
+}

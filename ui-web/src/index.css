@@ -1,0 +1,40 @@
+/*
+ * ================================================================
+ * SÚBOR: index.css
+ * CESTA: /ui-web/src/index.css
+ * POPIS: Hlavný CSS súbor pre L-KERN ERP aplikáciu - import centrálnych variables
+ * VERZIA: v1.1.0
+ * UPRAVENÉ: 2024-09-25 15:40:00
+ * ================================================================
+ */
+
+/* Import centrálnych CSS custom properties */
+@import './styles/variables.css';
+
+/* Global base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  color: var(--color-gray-800);
+  background-color: var(--color-gray-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus styles pre accessibility */
+*:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Remove focus outline pre mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}

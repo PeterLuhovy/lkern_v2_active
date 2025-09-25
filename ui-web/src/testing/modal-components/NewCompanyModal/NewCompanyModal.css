@@ -1,0 +1,230 @@
+/*
+ * ================================================================
+ * SÚBOR: NewCompanyModal.css
+ * CESTA: /ui-web/src/testing/modal-components/NewCompanyModal/NewCompanyModal.css
+ * POPIS: CSS styling pre NewCompanyModal komponent - extrahovaný z inline stylingu
+ * VERZIA: v1.0.0
+ * UPRAVENÉ: 2024-12-25 14:30:00
+ * ================================================================
+ */
+
+/* === MAIN CONTAINER === */
+.new-company-modal {
+  --primary-color: #2196F3;
+  --success-color: #4CAF50;
+  --text-color: var(--theme-text, #333333);
+  --text-secondary: var(--theme-text-secondary, #666666);
+  --input-background: var(--theme-input-background, #ffffff);
+  --input-border: var(--theme-input-border, #ddd);
+  --card-background: var(--theme-card-background, #f9f9f9);
+  --border-color: var(--theme-border, #e0e0e0);
+}
+
+/* === FORM ELEMENTS === */
+.new-company-modal .form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.new-company-modal .form-label.required::after {
+  content: ' *';
+  color: #f44336;
+}
+
+.new-company-modal .form-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input-background);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.new-company-modal .form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.new-company-modal .form-input.error {
+  border-color: #f44336;
+}
+
+.new-company-modal .form-select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input-background);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 14px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.new-company-modal .form-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* === GRID LAYOUTS === */
+.new-company-modal .grid-2-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.new-company-modal .form-section {
+  margin-bottom: 20px;
+}
+
+.new-company-modal .form-group {
+  margin-bottom: 16px;
+}
+
+/* === SECTION HEADERS === */
+.new-company-modal .section-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.new-company-modal .section-icon {
+  font-size: 18px;
+}
+
+/* === COMPANY TYPE BUTTONS === */
+.new-company-modal .type-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.new-company-modal .type-button {
+  padding: 8px 16px;
+  border: 2px solid var(--input-border);
+  border-radius: 20px;
+  background: var(--input-background);
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.new-company-modal .type-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.new-company-modal .type-button.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+/* === CONTACT SECTION === */
+.new-company-modal .contact-section {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* === VALIDATION MESSAGES === */
+.new-company-modal .error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.new-company-modal .helper-text {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* === COUNTRY FLAGS === */
+.new-company-modal .country-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.new-company-modal .country-flag {
+  font-size: 16px;
+}
+
+.new-company-modal .country-name {
+  font-size: 14px;
+}
+
+/* === FORM VALIDATION STATES === */
+.new-company-modal .form-input:valid {
+  border-color: var(--success-color);
+}
+
+.new-company-modal .form-input:invalid:not(:placeholder-shown) {
+  border-color: #f44336;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .new-company-modal .grid-2-columns {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .new-company-modal .type-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .new-company-modal .type-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .new-company-modal .section-header {
+    font-size: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* === ACCESSIBILITY === */
+.new-company-modal .form-input:focus,
+.new-company-modal .form-select:focus,
+.new-company-modal .type-button:focus {
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.new-company-modal .type-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.new-company-modal .type-button:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}

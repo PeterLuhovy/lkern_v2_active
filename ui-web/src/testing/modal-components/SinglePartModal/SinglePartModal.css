@@ -1,0 +1,236 @@
+/*
+ * ================================================================
+ * SÚBOR: SinglePartModal.css
+ * CESTA: /ui-web/src/testing/modal-components/SinglePartModal/SinglePartModal.css
+ * POPIS: CSS styling pre SinglePartModal komponent - extrahovaný z inline stylingu
+ * VERZIA: v1.0.0
+ * UPRAVENÉ: 2024-12-25 14:30:00
+ * ================================================================
+ */
+
+/* === FORM LABEL === */
+.single-part-modal .form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* === FORM INPUT === */
+.single-part-modal .form-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input-background);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.single-part-modal .form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* === FORM SELECT === */
+.single-part-modal .form-select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input-background);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 14px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.single-part-modal .form-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* === TEXTAREA === */
+.single-part-modal .form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input-background);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 14px;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.single-part-modal .form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* === GRID LAYOUTS === */
+.single-part-modal .grid-2-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.single-part-modal .grid-3-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.single-part-modal .form-section {
+  margin-bottom: 16px;
+}
+
+/* === TYPE SELECTION BUTTONS === */
+.single-part-modal .type-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.single-part-modal .type-button {
+  padding: 10px 20px;
+  background: var(--input-background);
+  color: var(--text-color);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.single-part-modal .type-button.active-prt {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  color: white;
+  border-color: #4CAF50;
+}
+
+.single-part-modal .type-button.active-asm {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+  color: white;
+  border-color: #FF9800;
+}
+
+/* === CHECKBOX LABEL === */
+.single-part-modal .checkbox-label {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.single-part-modal .checkbox-label input[type="checkbox"] {
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+/* === FLEX UTILITIES === */
+.single-part-modal .flex-center {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.single-part-modal .flex-space-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* === FILE UPLOAD SECTION === */
+.single-part-modal .file-upload-section {
+  margin-bottom: 16px;
+}
+
+.single-part-modal .file-list {
+  margin-top: 8px;
+}
+
+.single-part-modal .file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.single-part-modal .file-name {
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  margin-right: 8px;
+}
+
+.single-part-modal .remove-file-btn {
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.single-part-modal .remove-file-btn:hover {
+  background: #cc0000;
+}
+
+/* === SPACING UTILITIES === */
+.single-part-modal .margin-bottom-8 {
+  margin-bottom: 8px;
+}
+
+.single-part-modal .margin-bottom-16 {
+  margin-bottom: 16px;
+}
+
+.single-part-modal .margin-right-8 {
+  margin-right: 8px;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .single-part-modal .grid-2-columns,
+  .single-part-modal .grid-3-columns {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .single-part-modal .type-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .single-part-modal .type-button {
+    width: 100%;
+  }
+}
+
+/* === CSS CUSTOM PROPERTIES FOR THEME SUPPORT === */
+.single-part-modal {
+  --primary-color: #2196F3;
+  --text-color: var(--theme-text, #333333);
+  --text-secondary: var(--theme-text-secondary, #666666);
+  --input-background: var(--theme-input-background, #ffffff);
+  --input-border: var(--theme-input-border, #ddd);
+  --card-background: var(--theme-card-background, #f9f9f9);
+  --border-color: var(--theme-border, #e0e0e0);
+}

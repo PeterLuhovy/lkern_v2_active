@@ -1,0 +1,209 @@
+/*
+ * ================================================================
+ * SÚBOR: AddPartsModal.css
+ * CESTA: /ui-web/src/testing/modal-components/AddPartsModal/AddPartsModal.css
+ * POPIS: CSS styling pre AddPartsModal komponent - extrahovaný z inline stylingu
+ * VERZIA: v1.0.0
+ * UPRAVENÉ: 2024-12-25 14:30:00
+ * ================================================================
+ */
+
+.add-parts-modal {
+  --primary-color: #2196F3;
+  --success-color: #4CAF50;
+  --warning-color: #FF9800;
+  --error-color: #f44336;
+  --text-color: var(--theme-text, #333333);
+  --text-secondary: var(--theme-text-secondary, #666666);
+  --input-background: var(--theme-input-background, #ffffff);
+  --input-border: var(--theme-input-border, #ddd);
+  --card-background: var(--theme-card-background, #f9f9f9);
+  --border-color: var(--theme-border, #e0e0e0);
+}
+
+/* === FORM ELEMENTS === */
+.add-parts-modal .form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.add-parts-modal .form-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input-background);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.add-parts-modal .form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.add-parts-modal .form-select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input-background);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.add-parts-modal .form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--input-background);
+  border: 2px solid var(--input-border);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 14px;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+/* === GRID LAYOUTS === */
+.add-parts-modal .grid-2-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.add-parts-modal .grid-3-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.add-parts-modal .form-section {
+  margin-bottom: 20px;
+}
+
+/* === PARTS LIST === */
+.add-parts-modal .parts-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px;
+  background: var(--card-background);
+}
+
+.add-parts-modal .part-item {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  transition: box-shadow 0.2s ease;
+}
+
+.add-parts-modal .part-item:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-parts-modal .part-item:last-child {
+  margin-bottom: 0;
+}
+
+.add-parts-modal .part-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.add-parts-modal .part-name {
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+  flex: 1;
+}
+
+.add-parts-modal .remove-part-btn {
+  background: var(--error-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.add-parts-modal .remove-part-btn:hover {
+  background: #d32f2f;
+}
+
+.add-parts-modal .part-details {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* === ADD PART BUTTON === */
+.add-parts-modal .add-part-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100%;
+  margin-bottom: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.add-parts-modal .add-part-btn:hover {
+  background: #1976D2;
+}
+
+/* === EMPTY STATE === */
+.add-parts-modal .empty-parts {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.add-parts-modal .empty-parts::before {
+  content: '📦';
+  display: block;
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .add-parts-modal .grid-2-columns,
+  .add-parts-modal .grid-3-columns {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .add-parts-modal .part-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .add-parts-modal .remove-part-btn {
+    align-self: flex-end;
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,309 @@
+/*
+ * ================================================================
+ * SÚBOR: AddItemButton.css
+ * CESTA: /ui-web/src/components/shared/AddItemButton.css
+ * POPIS: CSS styling pre AddItemButton komponent - zjednotený button pre pridávanie položiek, refaktorovaný s CSS custom properties
+ * VERZIA: v1.1.0
+ * UPRAVENÉ: 2024-09-25 16:10:00
+ * ================================================================
+ */
+
+/* === ZÁKLADNÝ BUTTON === */
+.add-item-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xxl);
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--variant-gradient);
+  color: var(--color-white);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* === HOVER EFEKTY === */
+.add-item-button:hover:not(.add-item-button--disabled):not(.add-item-button--loading) {
+  background: var(--variant-hover-gradient);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.add-item-button:active:not(.add-item-button--disabled):not(.add-item-button--loading) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* === HOVER OVERLAY === */
+.add-item-button__hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+}
+
+.add-item-button:hover:not(.add-item-button--disabled) .add-item-button__hover-overlay {
+  opacity: 1;
+}
+
+/* === IKONA === */
+.add-item-button__icon {
+  font-size: var(--font-size-lg);
+  display: inline-block;
+  line-height: 1;
+  z-index: var(--z-index-base);
+}
+
+/* === LOADING SPINNER === */
+.add-item-button__spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* === TEXT === */
+.add-item-button__text {
+  font-weight: var(--font-weight-semibold);
+  z-index: var(--z-index-base);
+}
+
+/* === COUNT BADGE === */
+.add-item-button__count {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--variant-color);
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--border-radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  min-width: 18px;
+  text-align: center;
+  z-index: var(--z-index-base);
+}
+
+/* === VEĽKOSTI === */
+
+/* Small size */
+.add-item-button--small {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  gap: var(--spacing-sm);
+}
+
+.add-item-button--small .add-item-button__icon {
+  font-size: var(--font-size-md);
+}
+
+.add-item-button--small .add-item-button__count {
+  padding: 1px var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  min-width: var(--font-size-md);
+}
+
+/* Medium size (default) */
+.add-item-button--medium {
+  padding: var(--spacing-md) var(--spacing-xxl);
+  font-size: var(--font-size-md);
+  gap: var(--spacing-sm);
+}
+
+.add-item-button--medium .add-item-button__icon {
+  font-size: var(--font-size-lg);
+}
+
+/* Large size */
+.add-item-button--large {
+  padding: var(--spacing-lg) var(--spacing-xxxl);
+  font-size: var(--font-size-lg);
+  gap: var(--spacing-md);
+}
+
+.add-item-button--large .add-item-button__icon {
+  font-size: var(--font-size-xl);
+}
+
+.add-item-button--large .add-item-button__count {
+  padding: 3px var(--spacing-sm);
+  font-size: var(--font-size-md);
+  min-width: 22px;
+}
+
+/* === FULL WIDTH === */
+.add-item-button--full-width {
+  width: 100%;
+}
+
+/* === DISABLED STATE === */
+.add-item-button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+  background: var(--color-gray-300) !important;
+}
+
+/* === LOADING STATE === */
+.add-item-button--loading {
+  cursor: wait;
+  opacity: 0.8;
+}
+
+.add-item-button--loading .add-item-button__text {
+  opacity: 0.7;
+}
+
+/* === VARIANTY === */
+
+/* Primary variant (default) */
+.add-item-button--primary {
+  background: linear-gradient(135deg, var(--color-info), var(--color-info-dark));
+}
+
+.add-item-button--primary:hover:not(.add-item-button--disabled):not(.add-item-button--loading) {
+  background: linear-gradient(135deg, var(--color-info-dark), #0D47A1);
+}
+
+/* Secondary variant */
+.add-item-button--secondary {
+  background: linear-gradient(135deg, var(--color-gray-500), var(--color-gray-600));
+  border: 2px solid var(--theme-input-border);
+}
+
+.add-item-button--secondary:hover:not(.add-item-button--disabled):not(.add-item-button--loading) {
+  background: linear-gradient(135deg, var(--color-gray-600), var(--color-gray-800));
+}
+
+/* Success variant */
+.add-item-button--success {
+  background: linear-gradient(135deg, var(--color-success), var(--color-success-dark));
+}
+
+.add-item-button--success:hover:not(.add-item-button--disabled):not(.add-item-button--loading) {
+  background: linear-gradient(135deg, var(--color-success-dark), #1B5E20);
+}
+
+/* Warning variant */
+.add-item-button--warning {
+  background: linear-gradient(135deg, var(--color-warning), var(--color-warning-dark));
+}
+
+.add-item-button--warning:hover:not(.add-item-button--disabled):not(.add-item-button--loading) {
+  background: linear-gradient(135deg, var(--color-warning-dark), #E65100);
+}
+
+/* === RESPONSÍVNY DESIGN === */
+@media (max-width: 768px) {
+  .add-item-button {
+    padding: var(--font-size-md) var(--spacing-xl);
+    font-size: var(--font-size-lg); /* Lepšie pre touch */
+  }
+
+  .add-item-button--small {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-md);
+  }
+
+  .add-item-button--large {
+    padding: var(--font-size-xl) 28px;
+    font-size: var(--font-size-xl);
+  }
+
+  /* Full width na mobiloch */
+  .add-item-button:not(.add-item-button--small) {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-item-button__text {
+    font-size: var(--font-size-md);
+  }
+
+  .add-item-button--large .add-item-button__text {
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* === ACCESSIBILITY === */
+
+/* Focus states */
+.add-item-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+}
+
+.add-item-button:focus-visible {
+  outline: 2px solid var(--variant-color);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .add-item-button {
+    border: 2px solid currentColor;
+  }
+
+  .add-item-button__count {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .add-item-button {
+    transition: none;
+  }
+
+  .add-item-button__spinner {
+    animation: none;
+  }
+
+  .add-item-button__hover-overlay {
+    transition: none;
+  }
+
+  .add-item-button:hover:not(.add-item-button--disabled) {
+    transform: none;
+  }
+}
+
+/* === LIGHT/DARK THEME SUPPORT === */
+@media (prefers-color-scheme: dark) {
+  .add-item-button__count {
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--color-white);
+  }
+}
+
+/* === FOCUS RING ANIMATION === */
+@keyframes focusRing {
+  0% {
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 var(--spacing-sm) rgba(33, 150, 243, 0);
+  }
+}
+
+.add-item-button:focus:not(:focus-visible) {
+  animation: focusRing 0.6s ease-out;
+}

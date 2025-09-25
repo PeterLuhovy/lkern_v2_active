@@ -37,3 +37,8 @@ README.md
 # Docker
 Dockerfile
 .dockerignore
+
+# Backup files - L-KERN automatic backup workflow
+.backup/
+*.backup
+*_backup_*

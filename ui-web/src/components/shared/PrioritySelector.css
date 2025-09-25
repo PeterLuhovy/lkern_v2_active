@@ -1,0 +1,242 @@
+/*
+ * ================================================================
+ * SÚBOR: PrioritySelector.css
+ * CESTA: /ui-web/src/components/shared/PrioritySelector.css
+ * POPIS: CSS styling pre PrioritySelector komponent - zjednotený priority selector, refaktorovaný s CSS custom properties
+ * VERZIA: v1.1.0
+ * UPRAVENÉ: 2024-09-25 16:00:00
+ * ================================================================
+ */
+
+/* === ZÁKLADNÝ CONTAINER === */
+.priority-selector {
+  width: 100%;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* === HLAVIČKA SEKCIE === */
+.priority-selector__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.priority-selector__title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-gray-800, var(--theme-text));
+}
+
+.priority-selector__current {
+  font-size: var(--font-size-sm);
+  color: var(--theme-text);
+  background: var(--theme-input-background);
+  border: 1px solid var(--theme-input-border);
+  border-radius: var(--border-radius-xl);
+  padding: 2px var(--spacing-sm);
+}
+
+/* === TLAČIDLÁ CONTAINER === */
+.priority-selector__buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* Horizontálny layout */
+.priority-selector--horizontal .priority-selector__buttons {
+  flex-direction: row;
+}
+
+/* Vertikálny layout */
+.priority-selector--vertical .priority-selector__buttons {
+  flex-direction: column;
+  max-width: 300px;
+}
+
+/* === PRIORITY TLAČIDLÁ === */
+.priority-selector__button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: 2px solid var(--theme-input-border);
+  border-radius: var(--border-radius-pill);
+  background: var(--theme-input-background);
+  color: var(--theme-text);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: capitalize;
+  transition: var(--transition-normal);
+  white-space: nowrap;
+}
+
+.priority-selector__button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.priority-selector__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.priority-selector__button.active {
+  background: var(--priority-gradient);
+  color: white;
+  border-color: var(--priority-color);
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* === IKONY A LABELY === */
+.priority-selector__icon {
+  font-size: var(--font-size-md);
+  display: inline-block;
+}
+
+.priority-selector__label {
+  font-weight: var(--font-weight-semibold);
+}
+
+/* === POPIS PRIORITY === */
+.priority-selector__description {
+  margin-top: var(--spacing-sm);
+  text-align: center;
+}
+
+.priority-selector__description small {
+  color: var(--theme-text);
+  opacity: 0.7;
+  font-size: var(--font-size-sm);
+  font-style: italic;
+}
+
+/* === VEĽKOSTI === */
+
+/* Small size */
+.priority-selector--small .priority-selector__button {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-xs);
+  gap: var(--spacing-xs);
+}
+
+.priority-selector--small .priority-selector__icon {
+  font-size: var(--font-size-sm);
+}
+
+.priority-selector--small .priority-selector__title {
+  font-size: var(--font-size-sm);
+}
+
+/* Medium size (default) */
+.priority-selector--medium .priority-selector__button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  gap: var(--spacing-xs);
+}
+
+.priority-selector--medium .priority-selector__icon {
+  font-size: var(--font-size-md);
+}
+
+/* Large size */
+.priority-selector--large .priority-selector__button {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-md);
+  gap: var(--spacing-sm);
+}
+
+.priority-selector--large .priority-selector__icon {
+  font-size: var(--font-size-lg);
+}
+
+.priority-selector--large .priority-selector__title {
+  font-size: var(--font-size-lg);
+}
+
+/* === ŠPECIFICKÉ PRIORITY FARBY === */
+
+/* Nízka priorita - sivá */
+.priority-selector__button.priority-nizka.active {
+  background: linear-gradient(135deg, var(--color-priority-nizka), #616161);
+  border-color: var(--color-priority-nizka);
+}
+
+/* Normálna priorita - modrá */
+.priority-selector__button.priority-normalna.active {
+  background: linear-gradient(135deg, var(--color-priority-normalna), #1565C0);
+  border-color: var(--color-priority-normalna);
+}
+
+/* Stredná priorita - oranžová */
+.priority-selector__button.priority-stredna.active {
+  background: linear-gradient(135deg, var(--color-priority-stredna), var(--color-warning-dark));
+  border-color: var(--color-priority-stredna);
+}
+
+/* Rýchla priorita - červeno-oranžová */
+.priority-selector__button.priority-rychla.active {
+  background: linear-gradient(135deg, var(--color-priority-rychla), #D84315);
+  border-color: var(--color-priority-rychla);
+}
+
+/* Extra rýchla priorita - červená */
+.priority-selector__button.priority-extra_rychla.active {
+  background: linear-gradient(135deg, var(--color-priority-extra-rychla), var(--color-error-dark));
+  border-color: var(--color-priority-extra-rychla);
+}
+
+/* === RESPONSÍVNY DESIGN === */
+@media (max-width: 768px) {
+  .priority-selector--horizontal .priority-selector__buttons {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .priority-selector__button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .priority-selector__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+
+  .priority-selector__current {
+    align-self: flex-start;
+  }
+}
+
+/* === ACCESSIBILITY === */
+.priority-selector__button:focus {
+  outline: 2px solid var(--color-priority-normalna, var(--color-primary));
+  outline-offset: 2px;
+}
+
+.priority-selector__button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* === ANIMÁCIE === */
+@keyframes prioritySelect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+.priority-selector__button.active {
+  animation: prioritySelect var(--transition-fast) ease-out;
+}
