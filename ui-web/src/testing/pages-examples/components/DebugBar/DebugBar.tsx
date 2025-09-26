@@ -112,22 +112,6 @@ const DebugBar: React.FC<DebugBarProps> = ({
         background: backgroundColor
       }}
     >
-      {/* Back button - zobrazí sa len ak je onBack callback */}
-      {onBack && (
-        <button
-          onClick={onBack}
-          style={BACK_BUTTON_STYLES}
-          title={`Späť na predchádzajúcu stránku`}
-        >
-          {backLabel}
-        </button>
-      )}
-
-      {/* Debug title */}
-      <span>
-        TESTING: {title}
-      </span>
-
       {/* Copy button - zobrazí sa len ak je showCopyButton true */}
       {showCopyButton && (
         <button

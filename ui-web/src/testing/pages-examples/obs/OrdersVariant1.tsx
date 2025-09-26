@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import lkernLogo from '../../../assets/logos/lkern-logo.png';
 import luhovyLogo from '../../../assets/logos/luhovy-logo.png';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 interface Order {
   id: string;
@@ -891,6 +892,7 @@ const OrdersVariant1: React.FC = () => {
       padding: '4rem 10rem 5rem 2rem',
       paddingBottom: '80px'
     }}>
+      <DebugBar title="OrdersVariant1 (obs)" />
 
       {/* L-KERN HEADER */}
       <div style={{

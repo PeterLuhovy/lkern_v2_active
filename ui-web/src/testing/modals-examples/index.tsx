@@ -99,38 +99,7 @@ const ModalComponentsHub: React.FC = () => {
       .find((comp: any) => comp.id === selectedComponent);
 
     if (component) {
-      return (
-        <div>
-          <div style={{
-            position: 'fixed',
-            top: '20px',
-            left: '20px',
-            zIndex: 1000,
-            background: 'rgba(0,0,0,0.8)',
-            color: 'white',
-            padding: '12px 20px',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: 'bold'
-          }}>
-            <button
-              onClick={() => setSelectedComponent('')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'white',
-                cursor: 'pointer',
-                marginRight: '10px',
-                fontSize: '16px'
-              }}
-            >
-              ← Späť
-            </button>
-            TESTING: {(component as any).name}
-          </div>
-          {(component as any).component}
-        </div>
-      );
+      return (component as any).component;
     }
   }
 

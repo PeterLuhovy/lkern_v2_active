@@ -4,6 +4,7 @@
  * Farby z theme.css: #9c27b0, #3366cc, #f2f3f7, #222222
  */
 import React, { useState } from 'react';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 interface Order {
   id: string;
@@ -91,6 +92,7 @@ const OrdersVariant6: React.FC = () => {
       fontFamily: "'Segoe UI', sans-serif",
       padding: '2rem 10rem 2rem 2rem'
     }}>
+      <DebugBar title="OrdersVariant6 - L-KERN Professional" />
 
       {/* L-KERN HEADER */}
       <div style={{

@@ -1,21 +1,13 @@
 /**
- * ================================================================
- * SÚBOR: OrdersVariant2_V2.tsx
- * CESTA: /ui-web/src/testing/design-examples/OrdersVariant2_V2.tsx
- * POPIS: Orders Management V2 - kópia OrdersVariant2 s novým názvom
- * VERZIA: v1.0.0
- * UPRAVENÉ: 2025-01-27 23:30:00
- * ================================================================
- */
-
-/**
- * VARIANT 2 V2: L-KERN Professional s StatusBar a ReportButton
+ * VARIANT 2: L-KERN Professional s StatusBar a ReportButton
  * Inšpirovaný OrdersVariant9 - kompletná funkcionálna verzia
  * Farby z theme.css: #9c27b0, #3366cc, #f2f3f7, #222222
  */
-import React, { useState, useEffect } from 'react';
-import lkernLogo from '../../assets/logos/lkern-logo.png';
-import luhovyLogo from '../../assets/logos/luhovy-logo.png';
+import React, { useState } from 'react';
+import lkernLogo from '../../../assets/logos/lkern-logo.png';
+import luhovyLogo from '../../../assets/logos/luhovy-logo.png';
+import PageNavigationBar from '../components/PageNavigationBar/PageNavigationBar';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 interface Order {
   id: string;
@@ -794,16 +786,16 @@ const ReportButton: React.FC = () => {
 
 // === HLAVNÝ KOMPONENT ===
 
-const OrdersVariant2_V2: React.FC = () => {
+const OrdersVariant2: React.FC = () => {
   // Load settings from localStorage
   const loadSettings = () => {
     try {
-      const saved = localStorage.getItem('lkern_orders_settings_v2');
+      const saved = localStorage.getItem('lkern_orders_settings');
       if (saved) {
         const settings = JSON.parse(saved);
         return {
           isDarkMode: settings.isDarkMode || false,
-          columnWidths: settings.columnWidths || [60, 180, 140, 300, 200, 120, 200],
+          columnWidths: settings.columnWidths || [50, 180, 140, 300, 200, 120, 200],
           statusFilter: new Set<string>(settings.statusFilter || ['PENDING', 'IN_PRODUCTION', 'COMPLETED', 'INVOICED_UNPAID', 'INVOICED_PAID', 'CANCELLED', 'COMPLAINT']),
           priorityFilter: new Set<string>(settings.priorityFilter || ['LOW', 'NORMAL', 'HIGH', 'CRITICAL']),
           itemsPerPage: settings.itemsPerPage || 20
@@ -814,7 +806,7 @@ const OrdersVariant2_V2: React.FC = () => {
     }
     return {
       isDarkMode: false,
-      columnWidths: [60, 180, 140, 300, 200, 120, 200],
+      columnWidths: [50, 180, 140, 300, 200, 120, 200],
       statusFilter: new Set(['PENDING', 'IN_PRODUCTION', 'COMPLETED', 'INVOICED_UNPAID', 'INVOICED_PAID', 'CANCELLED', 'COMPLAINT']),
       priorityFilter: new Set(['LOW', 'NORMAL', 'HIGH', 'CRITICAL']),
       itemsPerPage: 20
@@ -825,82 +817,9 @@ const OrdersVariant2_V2: React.FC = () => {
 
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
-  const [quickFilters, setQuickFilters] = useState<Set<string>>(new Set());
   const [statusFilter, setStatusFilter] = useState<Set<string>>(initialSettings.statusFilter);
   const [priorityFilter, setPriorityFilter] = useState<Set<string>>(initialSettings.priorityFilter);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(initialSettings.isDarkMode);
-
-  // BULK OPERATIONS STATE
-  const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
-  const [showBulkActions, setShowBulkActions] = useState(false);
-
-  // MOBILE RESPONSIVE STATE
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-
-  // Media query hook
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      setIsTablet(window.innerWidth > 768 && window.innerWidth <= 1024);
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl/Cmd + F: Focus search
-      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-        e.preventDefault();
-        const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-        searchInput?.focus();
-      }
-
-      // Ctrl/Cmd + A: Select all visible orders
-      if ((e.ctrlKey || e.metaKey) && e.key === 'a' && e.target !== document.querySelector('input[type="text"]')) {
-        e.preventDefault();
-        handleSelectAll();
-      }
-
-      // Escape: Clear selections and search
-      if (e.key === 'Escape') {
-        if (selectedOrders.size > 0) {
-          clearSelection();
-        } else if (searchQuery || quickFilters.size > 0) {
-          setSearchQuery('');
-          setQuickFilters(new Set());
-        }
-      }
-
-      // Delete: Bulk delete selected orders
-      if (e.key === 'Delete' && selectedOrders.size > 0) {
-        e.preventDefault();
-        if (confirm(`Delete ${selectedOrders.size} selected orders?`)) {
-          handleBulkDelete();
-        }
-      }
-
-      // Ctrl/Cmd + N: Focus New Order button (simulate)
-      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-        e.preventDefault();
-        const newOrderBtn = document.querySelector('button[title="Vytvoriť novú objednávku"]') as HTMLElement;
-        newOrderBtn?.focus();
-      }
-
-      // ?: Show keyboard shortcuts help
-      if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        e.preventDefault();
-        setShowShortcuts(true);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [selectedOrders, searchQuery, quickFilters]);
 
   // Column widths and resizing
   const [columnWidths, setColumnWidths] = useState<number[]>(initialSettings.columnWidths);
@@ -916,19 +835,6 @@ const OrdersVariant2_V2: React.FC = () => {
   // Items per page state
   const [itemsPerPage, setItemsPerPage] = useState<number>(initialSettings.itemsPerPage);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
-  // Keyboard shortcuts helper
-  const [showShortcuts, setShowShortcuts] = useState(false);
-
-  // THEME CUSTOMIZATION STATE
-  const [customThemeSettings, setCustomThemeSettings] = useState({
-    compactMode: false,
-    highContrast: false,
-    fontSize: 'medium' as 'small' | 'medium' | 'large',
-    accentColor: '#9c27b0',
-    showAnimations: true
-  });
-  const [showThemeCustomizer, setShowThemeCustomizer] = useState(false);
 
   // Current user info
   const currentUser = {
@@ -946,27 +852,18 @@ const OrdersVariant2_V2: React.FC = () => {
         columnWidths,
         statusFilter: Array.from(statusFilter),
         priorityFilter: Array.from(priorityFilter),
-        itemsPerPage,
-        customThemeSettings
+        itemsPerPage
       };
-      localStorage.setItem('lkern_orders_settings_v2', JSON.stringify(settings));
+      localStorage.setItem('lkern_orders_settings', JSON.stringify(settings));
     } catch (e) {
       console.warn('Failed to save settings to localStorage:', e);
     }
   };
 
-  // Theme customization handlers
-  const handleThemeSettingChange = (setting: string, value: any) => {
-    setCustomThemeSettings(prev => ({
-      ...prev,
-      [setting]: value
-    }));
-  };
-
   // Save settings when they change
   React.useEffect(() => {
     saveSettings();
-  }, [isDarkMode, columnWidths, statusFilter, priorityFilter, itemsPerPage, customThemeSettings]);
+  }, [isDarkMode, columnWidths, statusFilter, priorityFilter, itemsPerPage]);
 
   // Professional enterprise data - 20 objednávok s rôznymi statusmi
   const orders: Order[] = [
@@ -1202,50 +1099,6 @@ const OrdersVariant2_V2: React.FC = () => {
     setPriorityFilter(newFilter);
   };
 
-  // BULK OPERATIONS HANDLERS
-  const handleSelectOrder = (orderId: string) => {
-    const newSelected = new Set(selectedOrders);
-    if (newSelected.has(orderId)) {
-      newSelected.delete(orderId);
-    } else {
-      newSelected.add(orderId);
-    }
-    setSelectedOrders(newSelected);
-    setShowBulkActions(newSelected.size > 0);
-  };
-
-  const handleSelectAll = () => {
-    if (selectedOrders.size === paginatedOrders.length) {
-      setSelectedOrders(new Set());
-      setShowBulkActions(false);
-    } else {
-      const allIds = new Set(paginatedOrders.map(order => order.id));
-      setSelectedOrders(allIds);
-      setShowBulkActions(true);
-    }
-  };
-
-  const handleBulkStatusChange = (newStatus: string) => {
-    // Simulácia - v production by volalo API
-    alert(`Bulk status change to ${newStatus} for ${selectedOrders.size} orders`);
-    setSelectedOrders(new Set());
-    setShowBulkActions(false);
-  };
-
-  const handleBulkDelete = () => {
-    // Simulácia - v production by volalo API
-    if (confirm(`Delete ${selectedOrders.size} selected orders?`)) {
-      alert(`${selectedOrders.size} orders deleted`);
-      setSelectedOrders(new Set());
-      setShowBulkActions(false);
-    }
-  };
-
-  const clearSelection = () => {
-    setSelectedOrders(new Set());
-    setShowBulkActions(false);
-  };
-
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'CRITICAL': return '#d32f2f';
@@ -1256,50 +1109,37 @@ const OrdersVariant2_V2: React.FC = () => {
     }
   };
 
-  // Enhanced Theme System with Customization
-  const getTheme = () => {
-    const baseTheme = {
-      light: {
-        background: customThemeSettings.highContrast ? '#ffffff' : '#f2f3f7',
-        cardBackground: customThemeSettings.highContrast ? '#f8f9fa' : '#ffffff',
-        text: customThemeSettings.highContrast ? '#000000' : '#222222',
-        textSecondary: customThemeSettings.highContrast ? '#333333' : '#495057',
-        textMuted: customThemeSettings.highContrast ? '#555555' : '#666',
-        border: customThemeSettings.highContrast ? '#000000' : '#dee2e6',
-        headerBackground: customThemeSettings.highContrast ? '#e0e0e0' : '#d5d6dd',
-        shadow: customThemeSettings.highContrast
-          ? '0 4px 12px rgba(0, 0, 0, 0.2)'
-          : '0 4px 12px rgba(0, 0, 0, 0.08)',
-        inputBackground: customThemeSettings.highContrast ? '#ffffff' : '#f2f3f7',
-        inputBorder: customThemeSettings.highContrast ? '#000000' : '#dee2e6',
-        hoverBackground: customThemeSettings.highContrast ? '#f0f0f0' : '#f8f9fa'
-      },
-      dark: {
-        background: customThemeSettings.highContrast ? '#000000' : '#1a1a1a',
-        cardBackground: customThemeSettings.highContrast ? '#1a1a1a' : '#2d2d2d',
-        text: customThemeSettings.highContrast ? '#ffffff' : '#e0e0e0',
-        textSecondary: customThemeSettings.highContrast ? '#cccccc' : '#b0b0b0',
-        textMuted: customThemeSettings.highContrast ? '#aaaaaa' : '#888',
-        border: customThemeSettings.highContrast ? '#ffffff' : '#404040',
-        headerBackground: customThemeSettings.highContrast ? '#333333' : '#383838',
-        shadow: customThemeSettings.highContrast
-          ? '0 4px 12px rgba(255, 255, 255, 0.1)'
-          : '0 4px 12px rgba(0, 0, 0, 0.3)',
-        inputBackground: customThemeSettings.highContrast ? '#000000' : '#4a4a4a',
-        inputBorder: customThemeSettings.highContrast ? '#ffffff' : '#666666',
-        hoverBackground: customThemeSettings.highContrast ? '#333333' : '#404040'
-      }
-    };
-
-    return isDarkMode ? baseTheme.dark : baseTheme.light;
+  // Theme colors
+  const theme = {
+    light: {
+      background: '#f2f3f7',
+      cardBackground: '#ffffff',
+      text: '#222222',
+      textSecondary: '#495057',
+      textMuted: '#666',
+      border: '#dee2e6',
+      headerBackground: '#d5d6dd',
+      shadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+      inputBackground: '#f2f3f7',
+      inputBorder: '#dee2e6',
+      hoverBackground: '#f8f9fa'
+    },
+    dark: {
+      background: '#1a1a1a',
+      cardBackground: '#2d2d2d',
+      text: '#e0e0e0',
+      textSecondary: '#b0b0b0',
+      textMuted: '#888',
+      border: '#404040',
+      headerBackground: '#383838',
+      shadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+      inputBackground: '#4a4a4a',
+      inputBorder: '#666666',
+      hoverBackground: '#404040'
+    }
   };
 
-  const currentTheme = getTheme();
-
-  // Animation settings
-  const getTransition = (transition: string = 'all 0.3s ease') => {
-    return customThemeSettings.showAnimations ? transition : 'none';
-  };
+  const currentTheme = isDarkMode ? theme.dark : theme.light;
 
   const getStatusColor = (status: string, forDarkMode: boolean = isDarkMode) => {
     if (forDarkMode) {
@@ -1356,7 +1196,7 @@ const OrdersVariant2_V2: React.FC = () => {
 
   // Column headers configuration
   const columns = [
-    { title: '☑️', field: '', sortable: false },
+    { title: '', field: '', sortable: false },
     { title: 'Stav Objednávky', field: 'status', sortable: true },
     { title: 'Dátum Prijatia', field: 'date', sortable: true },
     { title: 'Zákazník', field: 'customer', sortable: true },
@@ -1377,55 +1217,15 @@ const OrdersVariant2_V2: React.FC = () => {
     }
   };
 
-  // Enhanced search function - searches ALL fields
-  const searchAllFields = (order: Order, query: string): boolean => {
-    if (!query) return true;
-    const searchTerm = query.toLowerCase();
-    return [
-      order.orderNumber,
-      order.customer,
-      order.status,
-      order.priority,
-      order.date,
-      order.value.toString(),
-      order.items?.toString() || ''
-    ].some(field => field.toLowerCase().includes(searchTerm));
-  };
-
-  // Quick filters
-  const handleQuickFilter = (filterName: string) => {
-    const newFilters = new Set(quickFilters);
-    if (newFilters.has(filterName)) {
-      newFilters.delete(filterName);
-    } else {
-      newFilters.add(filterName);
-    }
-    setQuickFilters(newFilters);
-  };
-
-  const applyQuickFilters = (order: Order): boolean => {
-    if (quickFilters.size === 0) return true;
-
-    return Array.from(quickFilters).every(filter => {
-      switch (filter) {
-        case 'high-value': return order.value >= 5000000;
-        case 'this-week': return new Date(order.date) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        case 'overdue': return order.status === 'PENDING' && new Date(order.date) < new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-        case 'critical': return order.priority === 'CRITICAL';
-        default: return true;
-      }
-    });
-  };
-
   // Filter, sort and paginate orders
   const { paginatedOrders, totalPages, totalFilteredItems } = React.useMemo(() => {
     // First filter
     let filtered = orders.filter(order => {
-      const matchesSearch = searchAllFields(order, searchQuery);
+      const matchesSearch = order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           order.customer.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter.has(order.status);
       const matchesPriority = priorityFilter.has(order.priority);
-      const matchesQuickFilters = applyQuickFilters(order);
-      return matchesSearch && matchesStatus && matchesPriority && matchesQuickFilters;
+      return matchesSearch && matchesStatus && matchesPriority;
     });
 
     // Then sort
@@ -1471,7 +1271,7 @@ const OrdersVariant2_V2: React.FC = () => {
       totalPages,
       totalFilteredItems: filtered.length
     };
-  }, [orders, searchQuery, statusFilter, priorityFilter, quickFilters, sortField, sortDirection, itemsPerPage, currentPage]);
+  }, [orders, searchQuery, statusFilter, priorityFilter, sortField, sortDirection, itemsPerPage, currentPage]);
 
   // Column resizing functions
   const handleMouseDown = (e: React.MouseEvent, columnIndex: number) => {
@@ -1517,156 +1317,28 @@ const OrdersVariant2_V2: React.FC = () => {
     }
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
-  // Mobile Card Component
-  const MobileOrderCard = ({ order }: { order: Order }) => (
-    <div
-      key={order.id}
-      style={{
-        background: selectedOrders.has(order.id)
-          ? 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)'
-          : currentTheme.cardBackground,
-        border: `1px solid ${currentTheme.border}`,
-        borderLeft: selectedOrders.has(order.id)
-          ? '4px solid #2196f3'
-          : `4px solid ${getStatusColor(order.status)}`,
-        borderRadius: '8px',
-        padding: '16px',
-        marginBottom: '12px',
-        boxShadow: selectedOrders.has(order.id)
-          ? '0 2px 8px rgba(33, 150, 243, 0.2)'
-          : currentTheme.shadow,
-        transition: 'all 0.2s ease'
-      }}
-    >
-      {/* Mobile Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: '12px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <input
-            type="checkbox"
-            checked={selectedOrders.has(order.id)}
-            onChange={() => handleSelectOrder(order.id)}
-            style={{
-              transform: 'scale(1.1)',
-              accentColor: '#3366cc'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          />
-          <span style={{
-            fontSize: '18px',
-            fontWeight: '600',
-            color: currentTheme.text
-          }}>
-            {order.customer}
-          </span>
-        </div>
-        <span style={{
-          fontSize: '12px',
-          padding: '4px 8px',
-          borderRadius: '12px',
-          background: getStatusColor(order.status),
-          color: 'white',
-          fontWeight: '500'
-        }}>
-          {order.status.replace('_', ' ')}
-        </span>
-      </div>
-
-      {/* Mobile Content */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '12px',
-        fontSize: '14px',
-        color: currentTheme.textSecondary
-      }}>
-        <div>
-          <strong>Order:</strong><br />
-          <span style={{ fontFamily: 'monospace', fontSize: '12px' }}>
-            {order.orderNumber}
-          </span>
-        </div>
-        <div>
-          <strong>Date:</strong><br />
-          {order.date}
-        </div>
-        <div>
-          <strong>Priority:</strong><br />
-          <span style={{ color: getPriorityColor(order.priority) }}>
-            {order.priority}
-          </span>
-        </div>
-        <div>
-          <strong>Value:</strong><br />
-          <span style={{ fontWeight: '600', color: currentTheme.text }}>
-            ${order.value.toLocaleString()}
-          </span>
-        </div>
-      </div>
-
-      {/* Mobile Actions */}
-      <div style={{
-        display: 'flex',
-        gap: '8px',
-        marginTop: '16px',
-        paddingTop: '12px',
-        borderTop: `1px solid ${currentTheme.border}`
-      }}>
-        <button style={{
-          flex: 1,
-          padding: '8px 12px',
-          backgroundColor: '#3366cc',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          fontSize: '12px',
-          fontWeight: '500',
-          cursor: 'pointer'
-        }}>
-          ✏️ Edit
-        </button>
-        <button style={{
-          flex: 1,
-          padding: '8px 12px',
-          backgroundColor: '#f57c00',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          fontSize: '12px',
-          fontWeight: '500',
-          cursor: 'pointer'
-        }}>
-          🔍 View
-        </button>
-        <button style={{
-          padding: '8px 12px',
-          backgroundColor: '#d32f2f',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          fontSize: '12px',
-          fontWeight: '500',
-          cursor: 'pointer'
-        }}>
-          🗑️
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div style={{
       minHeight: '100vh',
       background: currentTheme.background,
       fontFamily: "'Segoe UI', sans-serif",
-      padding: isMobile ? '1rem 1rem 5rem 1rem' : isTablet ? '2rem 2rem 5rem 2rem' : '4rem 10rem 5rem 2rem',
+      padding: '4rem 10rem 5rem 2rem',
       paddingBottom: '80px',
       transition: 'background-color 0.3s ease'
     }}>
+      <DebugBar title="OrdersVariant2 - Professional" />
+
+      {/* PAGE NAVIGATION BAR */}
+      <PageNavigationBar
+        breadcrumbs={[
+          { name: 'Dashboard' },
+          { name: 'Testing Dashboard' },
+          { name: 'Design Examples' },
+          { name: 'Orders Management V1', isActive: true }
+        ]}
+        backLabel="← Back"
+        isDarkMode={isDarkMode}
+      />
 
       {/* L-KERN HEADER */}
       <div style={{
@@ -1689,7 +1361,7 @@ const OrdersVariant2_V2: React.FC = () => {
                 fontWeight: '700',
                 color: currentTheme.text
               }}>
-                Orders Management V2
+                Orders Management
               </h1>
               <div style={{
                 fontSize: '14px',
@@ -1705,77 +1377,6 @@ const OrdersVariant2_V2: React.FC = () => {
         </div>
       </div>
 
-      {/* BULK ACTIONS BAR */}
-      {showBulkActions && (
-        <div style={{
-          background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)',
-          border: '1px solid #2196f3',
-          borderLeft: '6px solid #2196f3',
-          borderRadius: '8px',
-          padding: '12px 16px',
-          marginBottom: '1rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          boxShadow: '0 2px 8px rgba(33, 150, 243, 0.2)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontWeight: '600', color: '#1976d2' }}>
-              ✅ {selectedOrders.size} selected orders
-            </span>
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <select
-              onChange={(e) => e.target.value && handleBulkStatusChange(e.target.value)}
-              style={{
-                padding: '4px 8px',
-                border: '1px solid #2196f3',
-                borderRadius: '4px',
-                backgroundColor: 'white',
-                cursor: 'pointer',
-                fontSize: '13px'
-              }}
-            >
-              <option value="">Change Status...</option>
-              <option value="PENDING">Pending</option>
-              <option value="IN_PRODUCTION">In Production</option>
-              <option value="COMPLETED">Completed</option>
-              <option value="CANCELLED">Cancelled</option>
-            </select>
-            <button
-              onClick={handleBulkDelete}
-              style={{
-                padding: '4px 12px',
-                backgroundColor: '#f44336',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '13px',
-                fontWeight: '500'
-              }}
-            >
-              🗑️ Delete
-            </button>
-            <button
-              onClick={clearSelection}
-              style={{
-                padding: '4px 12px',
-                backgroundColor: '#757575',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '13px',
-                fontWeight: '500'
-              }}
-            >
-              ❌ Clear
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* FILTER PANEL */}
       <div style={{
         background: currentTheme.cardBackground,
@@ -1786,119 +1387,28 @@ const OrdersVariant2_V2: React.FC = () => {
         marginBottom: '1.5rem',
         transition: 'all 0.3s ease'
       }}>
-        {/* Enhanced Search bar */}
+        {/* Search bar */}
         <div style={{ marginBottom: '16px' }}>
-          <div style={{ position: 'relative' }}>
-            <input
-              type="text"
-              placeholder="🔍 Search all fields: orders, customers, status, priority, value..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: 'calc(100% - 32px)',
-                padding: '10px 16px 10px 40px',
-                background: currentTheme.inputBackground,
-                border: `2px solid ${currentTheme.inputBorder}`,
-                borderRadius: '6px',
-                color: currentTheme.text,
-                fontSize: '16px',
-                outline: 'none',
-                transition: 'all 0.2s',
-                boxSizing: 'border-box',
-                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#9c27b0';
-                e.target.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.1), 0 0 0 3px rgba(156, 39, 176, 0.1)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = currentTheme.inputBorder;
-                e.target.style.boxShadow = 'inset 0 1px 3px rgba(0,0,0,0.1)';
-              }}
-            />
-            <span style={{
-              position: 'absolute',
-              left: '12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
+          <input
+            type="text"
+            placeholder="Search orders, customers, descriptions..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: 'calc(100% - 32px)',
+              padding: '8px 16px',
+              background: currentTheme.inputBackground,
+              border: `2px solid ${currentTheme.inputBorder}`,
+              borderRadius: '4px',
+              color: currentTheme.text,
               fontSize: '16px',
-              color: currentTheme.textMuted,
-              pointerEvents: 'none'
-            }}>
-              🔍
-            </span>
-          </div>
-
-          {/* Quick Filters */}
-          <div style={{
-            display: 'flex',
-            gap: '8px',
-            marginTop: '12px',
-            flexWrap: 'wrap'
-          }}>
-            {[
-              { id: 'high-value', label: '💰 High Value (>$5M)', color: '#ff9800' },
-              { id: 'this-week', label: '📅 This Week', color: '#4caf50' },
-              { id: 'overdue', label: '⏰ Overdue', color: '#f44336' },
-              { id: 'critical', label: '🔴 Critical Priority', color: '#e91e63' }
-            ].map(filter => (
-              <button
-                key={filter.id}
-                onClick={() => handleQuickFilter(filter.id)}
-                style={{
-                  padding: '4px 12px',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  border: 'none',
-                  borderRadius: '16px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  background: quickFilters.has(filter.id)
-                    ? filter.color
-                    : currentTheme.inputBackground,
-                  color: quickFilters.has(filter.id)
-                    ? 'white'
-                    : currentTheme.text,
-                  boxShadow: quickFilters.has(filter.id)
-                    ? `0 2px 4px ${filter.color}40`
-                    : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  if (!quickFilters.has(filter.id)) {
-                    e.currentTarget.style.background = `${filter.color}20`;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!quickFilters.has(filter.id)) {
-                    e.currentTarget.style.background = currentTheme.inputBackground;
-                  }
-                }}
-              >
-                {filter.label}
-              </button>
-            ))}
-            {(quickFilters.size > 0 || searchQuery) && (
-              <button
-                onClick={() => {
-                  setSearchQuery('');
-                  setQuickFilters(new Set());
-                }}
-                style={{
-                  padding: '4px 12px',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  border: `1px solid ${currentTheme.border}`,
-                  borderRadius: '16px',
-                  cursor: 'pointer',
-                  background: currentTheme.cardBackground,
-                  color: currentTheme.textMuted,
-                  transition: 'all 0.2s'
-                }}
-              >
-                ❌ Clear All
-              </button>
-            )}
-          </div>
+              outline: 'none',
+              transition: 'border-color 0.2s',
+              boxSizing: 'border-box'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#9c27b0'}
+            onBlur={(e) => e.target.style.borderColor = currentTheme.inputBorder}
+          />
         </div>
 
         {/* Quick filters */}
@@ -2095,60 +1605,15 @@ const OrdersVariant2_V2: React.FC = () => {
         </div>
       </div>
 
-      {/* DATA DISPLAY - Table or Cards based on screen size */}
-      {isMobile ? (
-        <div>
-          <div style={{
-            background: currentTheme.cardBackground,
-            border: `1px solid ${currentTheme.border}`,
-            borderLeft: '6px solid #9c27b0',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            marginBottom: '16px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <span style={{
-              fontSize: '16px',
-              fontWeight: '600',
-              color: currentTheme.text
-            }}>
-              📋 {totalFilteredItems} Orders
-            </span>
-            <select
-              value={itemsPerPage}
-              onChange={(e) => {
-                setItemsPerPage(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              style={{
-                padding: '4px 8px',
-                background: currentTheme.inputBackground,
-                border: `1px solid ${currentTheme.inputBorder}`,
-                borderRadius: '4px',
-                color: currentTheme.text,
-                fontSize: '13px'
-              }}
-            >
-              <option value={5}>5 per page</option>
-              <option value={10}>10 per page</option>
-              <option value={20}>20 per page</option>
-            </select>
-          </div>
-          {paginatedOrders.map(order => (
-            <MobileOrderCard key={order.id} order={order} />
-          ))}
-        </div>
-      ) : (
-        <div style={{
-          background: currentTheme.cardBackground,
-          border: `1px solid ${currentTheme.border}`,
-          borderLeft: '6px solid #9c27b0',
-          borderRadius: '8px',
-          overflow: 'hidden',
-          transition: 'all 0.3s ease'
-        }}>
+      {/* DATA GRID */}
+      <div style={{
+        background: currentTheme.cardBackground,
+        border: `1px solid ${currentTheme.border}`,
+        borderLeft: '6px solid #9c27b0',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        transition: 'all 0.3s ease'
+      }}>
 
         {/* GRID HEADER */}
         <div style={{
@@ -2165,26 +1630,20 @@ const OrdersVariant2_V2: React.FC = () => {
           {columns.map((column, index) => (
             <div
               key={index}
-              onClick={() => {
-                if (index === 0) {
-                  handleSelectAll();
-                } else if (column.sortable) {
-                  handleSort(column.field);
-                }
-              }}
+              onClick={() => column.sortable && handleSort(column.field)}
               style={{
                 width: `${columnWidths[index]}px`,
                 flex: index === 3 ? '1' : '0 0 auto',
                 padding: '6px 12px',
-                cursor: (index === 0 || column.sortable) ? 'pointer' : 'default',
+                cursor: column.sortable ? 'pointer' : 'default',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: index === 0 ? 'center' : 'space-between',
+                justifyContent: 'space-between',
                 position: 'relative',
                 transition: 'background-color 0.2s ease'
               }}
               onMouseEnter={(e) => {
-                if (index === 0 || column.sortable) {
+                if (column.sortable) {
                   e.currentTarget.style.backgroundColor = isDarkMode ? '#4a4a4a' : '#e0e0e0';
                   e.currentTarget.style.transform = 'translateY(-1px)';
                   e.currentTarget.style.boxShadow = isDarkMode
@@ -2193,27 +1652,14 @@ const OrdersVariant2_V2: React.FC = () => {
                 }
               }}
               onMouseLeave={(e) => {
-                if (index === 0 || column.sortable) {
+                if (column.sortable) {
                   e.currentTarget.style.backgroundColor = 'transparent';
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.boxShadow = 'none';
                 }
               }}
             >
-              {index === 0 ? (
-                <input
-                  type="checkbox"
-                  checked={selectedOrders.size === paginatedOrders.length && paginatedOrders.length > 0}
-                  onChange={() => {}} // Handled by parent onClick
-                  style={{
-                    transform: 'scale(1.2)',
-                    accentColor: '#3366cc',
-                    cursor: 'pointer'
-                  }}
-                />
-              ) : (
-                <span>{column.title}</span>
-              )}
+              <span>{column.title}</span>
 
               {/* Sort indicator */}
               {column.sortable && (
@@ -2262,16 +1708,10 @@ const OrdersVariant2_V2: React.FC = () => {
                 display: 'flex',
                 borderBottom: `1px solid ${currentTheme.border}`,
                 cursor: 'pointer',
-                background: selectedOrders.has(order.id)
-                  ? 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)'
-                  : getRowBackgroundColor(order.status, expandedOrders.has(order.id)),
-                borderLeft: selectedOrders.has(order.id)
-                  ? '4px solid #2196f3'
-                  : expandedOrders.has(order.id) ? '4px solid #3366cc' : '4px solid transparent',
+                background: getRowBackgroundColor(order.status, expandedOrders.has(order.id)),
+                borderLeft: expandedOrders.has(order.id) ? '4px solid #3366cc' : '4px solid transparent',
                 transition: 'all 0.2s ease',
-                boxShadow: selectedOrders.has(order.id)
-                  ? '0 2px 8px rgba(33, 150, 243, 0.2)'
-                  : expandedOrders.has(order.id) ? '0 2px 8px rgba(51, 102, 204, 0.1)' : 'none'
+                boxShadow: expandedOrders.has(order.id) ? '0 2px 8px rgba(51, 102, 204, 0.1)' : 'none'
               }}
               onMouseEnter={(e) => {
                 const currentBg = getRowBackgroundColor(order.status, expandedOrders.has(order.id));
@@ -2296,43 +1736,15 @@ const OrdersVariant2_V2: React.FC = () => {
                 e.currentTarget.style.borderRadius = '0';
               }}
             >
-              {/* Checkbox column */}
+              {/* Expand arrow */}
               <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSelectOrder(order.id);
-                }}
                 style={{
                   width: `${columnWidths[0]}px`,
                   flex: '0 0 auto',
                   padding: '6px 12px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedOrders.has(order.id)}
-                  onChange={() => {}} // Handled by parent onClick
-                  style={{
-                    transform: 'scale(1.1)',
-                    accentColor: '#3366cc',
-                    cursor: 'pointer'
-                  }}
-                />
-              </div>
-
-              {/* Expand arrow - moved to status column */}
-              <div
-                style={{
-                  width: `${columnWidths[1]}px`,
-                  flex: '0 0 auto',
-                  padding: '6px 12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
+                  justifyContent: 'center'
                 }}
                 onMouseEnter={(e) => {
                   const arrow = e.currentTarget.querySelector('.expand-arrow') as HTMLElement;
@@ -2352,7 +1764,7 @@ const OrdersVariant2_V2: React.FC = () => {
                 <span
                   className="expand-arrow"
                   style={{
-                    fontSize: '12px',
+                    fontSize: '16px',
                     color: expandedOrders.has(order.id) ? '#3366cc' : currentTheme.textMuted,
                     transform: expandedOrders.has(order.id) ? 'rotate(90deg)' : 'rotate(0deg)',
                     transition: 'all 0.2s ease',
@@ -2362,6 +1774,16 @@ const OrdersVariant2_V2: React.FC = () => {
                 >
                   ▶
                 </span>
+              </div>
+
+              {/* Status */}
+              <div style={{
+                width: `${columnWidths[1]}px`,
+                flex: '0 0 auto',
+                padding: '6px 12px',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
                 <span style={{
                   fontSize: '0.85rem',
                   fontWeight: '500',
@@ -2370,8 +1792,6 @@ const OrdersVariant2_V2: React.FC = () => {
                   {getStatusPrefix(order.status)} {order.status.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
                 </span>
               </div>
-
-              {/* Date - moved up */}
 
               {/* Date */}
               <div style={{
@@ -2593,8 +2013,7 @@ const OrdersVariant2_V2: React.FC = () => {
             )}
           </div>
         ))}
-        </div>
-      )}
+      </div>
 
       {/* PAGINATION */}
       {totalPages > 1 && (
@@ -2691,15 +2110,13 @@ const OrdersVariant2_V2: React.FC = () => {
         </div>
       )}
 
-      {/* ENHANCED FOOTER STATS WITH ANALYTICS */}
+      {/* FOOTER STATS */}
       <div style={{
         marginTop: '20px',
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: isMobile ? '12px' : '20px',
+        display: 'flex',
+        gap: '20px',
         fontSize: '14px'
       }}>
-        {/* Real-time calculated stats */}
         <div style={{
           background: currentTheme.cardBackground,
           padding: '12px 16px',
@@ -2741,371 +2158,10 @@ const OrdersVariant2_V2: React.FC = () => {
         toggleDarkMode={toggleDarkMode}
       />
 
-      {/* KEYBOARD SHORTCUTS HELP */}
-      {showShortcuts && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
-            zIndex: 1001,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          onClick={() => setShowShortcuts(false)}
-        >
-          <div
-            style={{
-              background: currentTheme.cardBackground,
-              border: `1px solid ${currentTheme.border}`,
-              borderRadius: '8px',
-              padding: '24px',
-              maxWidth: '500px',
-              width: '90%',
-              boxShadow: currentTheme.shadow
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 style={{
-              margin: '0 0 16px 0',
-              color: currentTheme.text,
-              fontSize: '20px',
-              fontWeight: '600'
-            }}>
-              ⌨️ Keyboard Shortcuts
-            </h3>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 2fr',
-              gap: '12px',
-              fontSize: '14px',
-              color: currentTheme.textSecondary
-            }}>
-              <strong>Ctrl/Cmd + F</strong><span>Focus search bar</span>
-              <strong>Ctrl/Cmd + A</strong><span>Select all orders</span>
-              <strong>Escape</strong><span>Clear selections/search</span>
-              <strong>Delete</strong><span>Delete selected orders</span>
-              <strong>Ctrl/Cmd + N</strong><span>Focus New Order button</span>
-              <strong>?</strong><span>Show this help</span>
-            </div>
-            <button
-              onClick={() => setShowShortcuts(false)}
-              style={{
-                marginTop: '20px',
-                padding: '8px 16px',
-                background: '#3366cc',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500'
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* HELP SHORTCUT TRIGGER */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: '100px',
-          right: '24px',
-          width: '40px',
-          height: '40px',
-          background: '#757575',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          zIndex: 998,
-          transition: 'all 0.3s ease',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-        }}
-        onClick={() => setShowShortcuts(true)}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = '#616161';
-          e.currentTarget.style.transform = 'scale(1.1)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = '#757575';
-          e.currentTarget.style.transform = 'scale(1)';
-        }}
-        title="Show keyboard shortcuts (?)"
-      >
-        <span style={{
-          color: 'white',
-          fontSize: '18px',
-          fontWeight: 'bold'
-        }}>?</span>
-      </div>
-
-      {/* THEME CUSTOMIZER */}
-      {showThemeCustomizer && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
-            zIndex: 1002,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          onClick={() => setShowThemeCustomizer(false)}
-        >
-          <div
-            style={{
-              background: currentTheme.cardBackground,
-              border: `1px solid ${currentTheme.border}`,
-              borderRadius: '8px',
-              padding: '24px',
-              maxWidth: '400px',
-              width: '90%',
-              boxShadow: currentTheme.shadow
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 style={{
-              margin: '0 0 20px 0',
-              color: currentTheme.text,
-              fontSize: '20px',
-              fontWeight: '600'
-            }}>
-              🎨 Theme Customizer
-            </h3>
-
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '14px',
-                color: currentTheme.text,
-                marginBottom: '8px',
-                cursor: 'pointer'
-              }}>
-                <input
-                  type="checkbox"
-                  checked={customThemeSettings.compactMode}
-                  onChange={(e) => handleThemeSettingChange('compactMode', e.target.checked)}
-                  style={{ accentColor: customThemeSettings.accentColor }}
-                />
-                📦 Compact Mode (Smaller spacing)
-              </label>
-
-              <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '14px',
-                color: currentTheme.text,
-                marginBottom: '8px',
-                cursor: 'pointer'
-              }}>
-                <input
-                  type="checkbox"
-                  checked={customThemeSettings.highContrast}
-                  onChange={(e) => handleThemeSettingChange('highContrast', e.target.checked)}
-                  style={{ accentColor: customThemeSettings.accentColor }}
-                />
-                🔆 High Contrast (Better accessibility)
-              </label>
-
-              <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '14px',
-                color: currentTheme.text,
-                marginBottom: '16px',
-                cursor: 'pointer'
-              }}>
-                <input
-                  type="checkbox"
-                  checked={customThemeSettings.showAnimations}
-                  onChange={(e) => handleThemeSettingChange('showAnimations', e.target.checked)}
-                  style={{ accentColor: customThemeSettings.accentColor }}
-                />
-                ✨ Show Animations
-              </label>
-
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  color: currentTheme.text,
-                  marginBottom: '4px',
-                  fontWeight: '500'
-                }}>
-                  📏 Font Size
-                </label>
-                <select
-                  value={customThemeSettings.fontSize}
-                  onChange={(e) => handleThemeSettingChange('fontSize', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    background: currentTheme.inputBackground,
-                    border: `1px solid ${currentTheme.inputBorder}`,
-                    borderRadius: '4px',
-                    color: currentTheme.text,
-                    fontSize: '14px'
-                  }}
-                >
-                  <option value="small">Small</option>
-                  <option value="medium">Medium (Default)</option>
-                  <option value="large">Large</option>
-                </select>
-              </div>
-
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  color: currentTheme.text,
-                  marginBottom: '4px',
-                  fontWeight: '500'
-                }}>
-                  🎨 Accent Color
-                </label>
-                <div style={{
-                  display: 'flex',
-                  gap: '8px',
-                  flexWrap: 'wrap'
-                }}>
-                  {[
-                    { color: '#9c27b0', name: 'L-KERN Purple' },
-                    { color: '#3366cc', name: 'Blue' },
-                    { color: '#4caf50', name: 'Green' },
-                    { color: '#ff9800', name: 'Orange' },
-                    { color: '#e91e63', name: 'Pink' },
-                    { color: '#607d8b', name: 'Blue Grey' }
-                  ].map(({ color, name }) => (
-                    <button
-                      key={color}
-                      onClick={() => handleThemeSettingChange('accentColor', color)}
-                      style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        background: color,
-                        border: customThemeSettings.accentColor === color
-                          ? '3px solid white'
-                          : '1px solid #ccc',
-                        cursor: 'pointer',
-                        boxShadow: customThemeSettings.accentColor === color
-                          ? `0 0 0 2px ${color}`
-                          : 'none'
-                      }}
-                      title={name}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div style={{
-              display: 'flex',
-              gap: '8px',
-              justifyContent: 'flex-end'
-            }}>
-              <button
-                onClick={() => {
-                  setCustomThemeSettings({
-                    compactMode: false,
-                    highContrast: false,
-                    fontSize: 'medium',
-                    accentColor: '#9c27b0',
-                    showAnimations: true
-                  });
-                }}
-                style={{
-                  padding: '8px 16px',
-                  background: 'transparent',
-                  color: currentTheme.textMuted,
-                  border: `1px solid ${currentTheme.border}`,
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                Reset
-              </button>
-              <button
-                onClick={() => setShowThemeCustomizer(false)}
-                style={{
-                  padding: '8px 16px',
-                  background: customThemeSettings.accentColor,
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500'
-                }}
-              >
-                Apply
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* THEME CUSTOMIZER BUTTON */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: '150px',
-          right: '24px',
-          width: '40px',
-          height: '40px',
-          background: 'linear-gradient(135deg, #9c27b0, #6a1b9a)',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          zIndex: 998,
-          transition: getTransition('all 0.3s ease'),
-          boxShadow: '0 2px 8px rgba(156, 39, 176, 0.3)'
-        }}
-        onClick={() => setShowThemeCustomizer(true)}
-        onMouseEnter={(e) => {
-          if (customThemeSettings.showAnimations) {
-            e.currentTarget.style.background = 'linear-gradient(135deg, #6a1b9a, #4a148c)';
-            e.currentTarget.style.transform = 'scale(1.1)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (customThemeSettings.showAnimations) {
-            e.currentTarget.style.background = 'linear-gradient(135deg, #9c27b0, #6a1b9a)';
-            e.currentTarget.style.transform = 'scale(1)';
-          }
-        }}
-        title="Customize theme"
-      >
-        <span style={{
-          color: 'white',
-          fontSize: '18px'
-        }}>🎨</span>
-      </div>
-
       {/* REPORT BUTTON - fixed vpravo hore */}
       <ReportButton />
     </div>
   );
 };
 
-export default OrdersVariant2_V2;
+export default OrdersVariant2;

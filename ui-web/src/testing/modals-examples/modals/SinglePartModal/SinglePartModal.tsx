@@ -11,8 +11,8 @@
 import React, { useState, useEffect } from 'react';
 import ManufacturingTechnologyModal from '../ManufacturingTechnologyModal';
 import ModalTemplate from '../ModalTemplate';
-import { PrioritySelector, TypeSelector, AddItemButton } from '../../../components/shared';
-import type { PriorityType, PartType } from '../../../components/shared';
+import { PrioritySelector, TypeSelector, AddItemButton } from '../../components';
+import type { PriorityType, PartType } from '../../components';
 import './SinglePartModal.css';
 
 // === CONSTANTS ===

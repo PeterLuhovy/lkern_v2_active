@@ -4,6 +4,7 @@
  * Farby: fialová (#9c27b0), tmavomodrá (#3366cc), biela, šedá
  */
 import React, { useState } from 'react';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 interface Order {
   id: string;
@@ -91,6 +92,7 @@ const OrdersVariant5: React.FC = () => {
       fontFamily: "'Inter', 'Segoe UI', sans-serif",
       padding: '32px'
     }}>
+      <DebugBar title="OrdersVariant5 - Corporate Premium" />
 
       {/* PREMIUM CORPORATE HEADER */}
       <div style={{

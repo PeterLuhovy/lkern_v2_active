@@ -1,15 +1,17 @@
 /*
  * ================================================================
- * SÚBOR: OrdersVariant7.tsx
- * CESTA: /ui-web/src/design-variants/OrdersVariant7.tsx
- * POPIS: Perfektný variant - funkcionalita v7 + dizajn v6 + sortovanie + resizable + status bar
+ * SÚBOR: OrdersVariant8.tsx
+ * CESTA: /ui-web/src/testing/design-examples/OrdersVariant8.tsx
+ * POPIS: Funkcionalita v7 (sortovanie, resizable, filter) s kompletným dizajnom a farbami v6 - refaktorované s centralizovanými konštantami
  * VERZIA: v2.0.0
- * UPRAVENÉ: 2024-09-24 21:35:00
+ * UPRAVENÉ: 2024-09-25 16:15:00
  * ================================================================
  */
 import React, { useState, useRef } from 'react';
+import { COLORS, SPACING, LAYOUT, TYPOGRAPHY, UI_BEHAVIOR } from '../../../config/constants';
 import lkernLogo from '../../../assets/logos/lkern-logo.png';
 import luhovyLogo from '../../../assets/logos/luhovy-logo.png';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 interface Order {
   id: string;
@@ -32,22 +34,131 @@ interface Order {
 type SortField = 'orderNumber' | 'customer' | 'priority' | 'status' | 'date' | 'value' | 'items';
 type SortDirection = 'asc' | 'desc';
 
-const OrdersVariant7: React.FC = () => {
+// === COMPONENT CONSTANTS ===
+// Centralizované konštanty pre OrdersVariant8 komponent
+// Používa centrálne constants.ts pre design tokens a business pravidlá
+
+// Column configuration pre resizable table
+const COLUMN_CONFIG = {
+  defaultWidths: [50, 240, 200, 100, 120, 100, 140, 80], // px values pre štartovné šírky stĺpcov
+  minWidth: 50, // minimálna šírka stĺpca pri resize
+  resizeHandleWidth: 4 // šírka resize handle v px
+};
+
+// Status colors pre order status badges
+const STATUS_COLORS = {
+  COMPLETED: COLORS.status.success,     // #4CAF50
+  IN_PROGRESS: COLORS.brand.secondary,  // #3366cc
+  PENDING: COLORS.status.warning,       // #FF9800
+  CANCELLED: COLORS.status.error,       // #f44336
+  default: COLORS.status.muted          // #9E9E9E
+};
+
+// Priority colors pre priority badges
+const PRIORITY_COLORS = {
+  CRITICAL: '#d32f2f',    // Tmavo červená pre kritické
+  HIGH: '#f57c00',        // Oranžová pre vysokú
+  NORMAL: COLORS.brand.secondary, // #3366cc
+  LOW: COLORS.status.success,     // #4CAF50
+  default: COLORS.neutral.gray600 // #757575
+};
+
+// Layout styles pre spacing, padding, margins
+const LAYOUT_STYLES = {
+  pageBackground: COLORS.neutral.gray100, // #f2f3f7
+  cardBackground: COLORS.neutral.white,   // #ffffff
+  borderColor: COLORS.neutral.gray200,    // #dee2e6
+  pagePadding: {
+    top: SPACING.xxxl,        // 32px
+    right: '10rem',           // Špeciálne right padding pre sidebar
+    bottom: SPACING.xxxl,     // 32px
+    left: SPACING.xxxl        // 32px
+  },
+  cardPadding: SPACING.xl,    // 20px
+  cardMargin: SPACING.xxxl,   // 32px
+  filterPanelPadding: SPACING.xxl, // 24px
+  inputPadding: {
+    vertical: SPACING.md,     // 12px
+    horizontal: SPACING.lg    // 16px
+  },
+  sectionSpacing: SPACING.xl, // 20px
+  itemSpacing: SPACING.md,    // 12px
+  gapSmall: SPACING.xs,       // 4px
+  gapMedium: SPACING.md,      // 12px
+  gapLarge: SPACING.lg,       // 16px
+  gapXLarge: SPACING.xxxl     // 32px
+};
+
+// Typography styles pre font sizes a weights
+const TYPOGRAPHY_STYLES = {
+  headerTitle: {
+    size: 28,                           // px
+    weight: TYPOGRAPHY.fontWeight.bold  // 700
+  },
+  headerSubtitle: {
+    size: TYPOGRAPHY.fontSize.md,             // 14px
+    weight: TYPOGRAPHY.fontWeight.semibold    // 600
+  },
+  bodyText: {
+    size: TYPOGRAPHY.fontSize.md,       // 14px
+    weight: TYPOGRAPHY.fontWeight.normal // 400
+  },
+  buttonText: {
+    size: TYPOGRAPHY.fontSize.sm,             // 12px (13px adjusted to match old)
+    weight: TYPOGRAPHY.fontWeight.semibold    // 600
+  },
+  badgeText: {
+    size: TYPOGRAPHY.fontSize.sm,             // 12px
+    weight: TYPOGRAPHY.fontWeight.semibold    // 600
+  },
+  tableHeader: {
+    size: TYPOGRAPHY.fontSize.sm,             // 12px (13px adjusted)
+    weight: TYPOGRAPHY.fontWeight.bold        // 700
+  },
+  valueText: {
+    size: TYPOGRAPHY.fontSize.md,       // 14px
+    weight: TYPOGRAPHY.fontWeight.bold  // 700
+  }
+};
+
+// UI colors pre rozličné elementy
+const UI_COLORS = {
+  primary: COLORS.brand.primary,        // #9c27b0
+  secondary: COLORS.brand.secondary,    // #3366cc
+  accent: COLORS.brand.accent,          // #E91E63
+  primaryDark: COLORS.brand.dark,       // #5e1065
+  text: COLORS.neutral.gray900,         // #212121 (#222222 adjusted)
+  textMuted: COLORS.neutral.gray600,    // #757575 (#666 adjusted)
+  success: COLORS.status.success,       // #4CAF50 (#388e3c adjusted)
+  hover: '#e3f2fd',                     // Light blue hover effect
+  alternateRow: COLORS.neutral.gray50,  // #fafafa (#f8f9fa adjusted)
+  inputBackground: COLORS.neutral.gray100, // #f5f5f5 (#f2f3f7 adjusted)
+  detailBackground: COLORS.neutral.gray100 // #f5f5f5 (#f2f3f7 adjusted)
+};
+
+// Gradient definitions
+const GRADIENTS = {
+  headerGradient: `linear-gradient(90deg, ${COLORS.brand.primary} 0%, ${COLORS.brand.dark} 100%)`,
+  borderAccent: `6px solid ${COLORS.brand.primary}`
+};
+
+const OrdersVariant8: React.FC = () => {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<Set<string>>(new Set(['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']));
   const [priorityFilter, setPriorityFilter] = useState<Set<string>>(new Set(['LOW', 'NORMAL', 'HIGH', 'CRITICAL']));
   const [sortField, setSortField] = useState<SortField>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [columnWidths, setColumnWidths] = useState<number[]>([50, 240, 200, 100, 120, 100, 140, 80]);
+  const [columnWidths, setColumnWidths] = useState<number[]>(COLUMN_CONFIG.defaultWidths);
   const [isDragging, setIsDragging] = useState(false);
   const [dragIndex, setDragIndex] = useState<number>(-1);
   const dragStartX = useRef(0);
   const startWidth = useRef(0);
 
+  // Professional enterprise data - same as v7
   const baseOrders: Order[] = [
     {
-      id: '1',
+      id: '001',
       orderNumber: 'ORD-LCVV-240924-001-LMT',
       customer: 'Lockheed Martin Corporation',
       priority: 'CRITICAL',
@@ -55,14 +166,14 @@ const OrdersVariant7: React.FC = () => {
       date: '2024-09-24',
       value: 12500000,
       items: 127,
-      description: 'F-35 Lightning II fighter jet components',
+      description: 'F-35 Lightning II fighter jet advanced components',
       details: [
         { partNumber: 'LMT-F35-001', quantity: 45, unitPrice: 185000, specifications: 'Stealth coating titanium panels' },
         { partNumber: 'LMT-F35-002', quantity: 82, unitPrice: 95000, specifications: 'Avionics housing assemblies' }
       ]
     },
     {
-      id: '2',
+      id: '002',
       orderNumber: 'ORD-LIND-240923-002-BAE',
       customer: 'BAE Systems plc',
       priority: 'HIGH',
@@ -77,7 +188,7 @@ const OrdersVariant7: React.FC = () => {
       ]
     },
     {
-      id: '3',
+      id: '003',
       orderNumber: 'ORD-LCVV-240922-003-RTN',
       customer: 'Raytheon Technologies',
       priority: 'NORMAL',
@@ -92,7 +203,7 @@ const OrdersVariant7: React.FC = () => {
       ]
     },
     {
-      id: '4',
+      id: '004',
       orderNumber: 'ORD-LIND-240921-004-NGR',
       customer: 'Northrop Grumman',
       priority: 'HIGH',
@@ -107,7 +218,7 @@ const OrdersVariant7: React.FC = () => {
       ]
     },
     {
-      id: '5',
+      id: '005',
       orderNumber: 'ORD-LCVV-240920-005-BOE',
       customer: 'Boeing Defense',
       priority: 'LOW',
@@ -123,7 +234,7 @@ const OrdersVariant7: React.FC = () => {
     }
   ];
 
-  // Sorting logic
+  // Sorting logic - same as v7
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -133,7 +244,7 @@ const OrdersVariant7: React.FC = () => {
     }
   };
 
-  // Column resizing logic
+  // Column resizing logic - same as v7
   const handleMouseDown = (e: React.MouseEvent, index: number) => {
     e.preventDefault();
     setIsDragging(true);
@@ -144,7 +255,7 @@ const OrdersVariant7: React.FC = () => {
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging && dragIndex >= 0) {
         const diff = e.clientX - dragStartX.current;
-        const newWidth = Math.max(50, startWidth.current + diff);
+        const newWidth = Math.max(COLUMN_CONFIG.minWidth, startWidth.current + diff);
         const newWidths = [...columnWidths];
         newWidths[dragIndex] = newWidth;
         setColumnWidths(newWidths);
@@ -192,7 +303,7 @@ const OrdersVariant7: React.FC = () => {
     setPriorityFilter(newFilter);
   };
 
-  // Sort and filter orders
+  // Sort and filter orders - same as v7
   const filteredAndSortedOrders = baseOrders
     .filter(order => {
       const matchesSearch = order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -224,24 +335,13 @@ const OrdersVariant7: React.FC = () => {
       }
     });
 
+  // Colors using centralized constants
   const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'CRITICAL': return '#d32f2f';
-      case 'HIGH': return '#f57c00';
-      case 'NORMAL': return '#3366cc';
-      case 'LOW': return '#388e3c';
-      default: return '#616161';
-    }
+    return PRIORITY_COLORS[priority as keyof typeof PRIORITY_COLORS] || PRIORITY_COLORS.default;
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'COMPLETED': return '#388e3c';
-      case 'IN_PROGRESS': return '#3366cc';
-      case 'PENDING': return '#f57c00';
-      case 'CANCELLED': return '#d32f2f';
-      default: return '#616161';
-    }
+    return STATUS_COLORS[status as keyof typeof STATUS_COLORS] || STATUS_COLORS.default;
   };
 
   const getSortIcon = (field: SortField) => {
@@ -259,56 +359,57 @@ const OrdersVariant7: React.FC = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#f2f3f7',
+      background: LAYOUT_STYLES.pageBackground,
       fontFamily: "'Segoe UI', sans-serif",
-      padding: '2rem 10rem 2rem 2rem'
+      padding: `${LAYOUT_STYLES.pagePadding.top}px ${LAYOUT_STYLES.pagePadding.right} ${LAYOUT_STYLES.pagePadding.bottom}px ${LAYOUT_STYLES.pagePadding.left}px`
     }}>
+      <DebugBar title="OrdersVariant8 - Full Refactored" />
 
-      {/* L-KERN HEADER - Style v6 */}
+      {/* L-KERN HEADER - refaktorovaný s konštantami */}
       <div style={{
-        background: '#ffffff',
-        padding: '20px',
-        marginBottom: '2rem',
-        border: '1px solid #dee2e6',
-        borderLeft: '6px solid #9c27b0',
+        background: LAYOUT_STYLES.cardBackground,
+        padding: `${LAYOUT_STYLES.cardPadding}px`,
+        marginBottom: `${LAYOUT_STYLES.cardMargin}px`,
+        border: `1px solid ${LAYOUT_STYLES.borderColor}`,
+        borderLeft: GRADIENTS.borderAccent,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: `${LAYOUT_STYLES.sectionSpacing}px` }}>
           <img src={lkernLogo} alt="L-KERN" style={{ height: '42px' }} />
           <div>
             <h1 style={{
               margin: 0,
-              fontSize: '28px',
-              fontWeight: '700',
-              color: '#222222'
+              fontSize: `${TYPOGRAPHY_STYLES.headerTitle.size}px`,
+              fontWeight: TYPOGRAPHY_STYLES.headerTitle.weight,
+              color: UI_COLORS.text
             }}>
               L-KERN Orders Management
             </h1>
             <div style={{
-              fontSize: '14px',
-              color: '#9c27b0',
-              fontWeight: '600',
-              marginTop: '4px'
+              fontSize: `${TYPOGRAPHY_STYLES.headerSubtitle.size}px`,
+              color: UI_COLORS.primary,
+              fontWeight: TYPOGRAPHY_STYLES.headerSubtitle.weight,
+              marginTop: `${LAYOUT_STYLES.gapSmall}px`
             }}>
-              Professional ERP System v7 • Manufacturing Operations
+              Professional ERP System v8 • Advanced Manufacturing Operations
             </div>
           </div>
         </div>
         <img src={luhovyLogo} alt="Luhovy Industries" style={{ height: '36px' }} />
       </div>
 
-      {/* Filter panel - funkcionalita v7 s dizajnom v6 */}
+      {/* Filter panel - refaktorovaný s konštantami */}
       <div style={{
-        background: '#ffffff',
-        border: '1px solid #dee2e6',
-        borderLeft: '6px solid #3366cc',
-        padding: '24px',
-        marginBottom: '2rem'
+        background: LAYOUT_STYLES.cardBackground,
+        border: `1px solid ${LAYOUT_STYLES.borderColor}`,
+        borderLeft: `6px solid ${UI_COLORS.secondary}`,
+        padding: `${LAYOUT_STYLES.filterPanelPadding}px`,
+        marginBottom: `${LAYOUT_STYLES.cardMargin}px`
       }}>
-        {/* Search bar */}
-        <div style={{ marginBottom: '20px' }}>
+        {/* Search bar - refaktorovaný s konštantami */}
+        <div style={{ marginBottom: `${LAYOUT_STYLES.sectionSpacing}px` }}>
           <input
             type="text"
             placeholder="Search orders, customers, descriptions..."
@@ -316,49 +417,49 @@ const OrdersVariant7: React.FC = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               width: '100%',
-              padding: '12px 16px',
-              background: '#f2f3f7',
-              border: '2px solid #dee2e6',
-              borderRadius: '4px',
-              color: '#222222',
-              fontSize: '16px',
+              padding: `${LAYOUT_STYLES.inputPadding.vertical}px ${LAYOUT_STYLES.inputPadding.horizontal}px`,
+              background: UI_COLORS.inputBackground,
+              border: `2px solid ${LAYOUT_STYLES.borderColor}`,
+              borderRadius: `${LAYOUT.borderRadius.sm}px`,
+              color: UI_COLORS.text,
+              fontSize: `${TYPOGRAPHY_STYLES.bodyText.size + 2}px`, // 16px
               outline: 'none',
-              transition: 'border-color 0.2s'
+              transition: `border-color ${UI_BEHAVIOR.animation.fast}ms`
             }}
-            onFocus={(e) => e.target.style.borderColor = '#9c27b0'}
-            onBlur={(e) => e.target.style.borderColor = '#dee2e6'}
+            onFocus={(e) => e.target.style.borderColor = UI_COLORS.primary}
+            onBlur={(e) => e.target.style.borderColor = LAYOUT_STYLES.borderColor}
           />
         </div>
 
-        {/* Fast filters */}
-        <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* Fast filters - refaktorovaný s konštantami */}
+        <div style={{ display: 'flex', gap: `${LAYOUT_STYLES.gapXLarge}px`, flexWrap: 'wrap', alignItems: 'center' }}>
           {/* Status filter */}
           <div>
             <div style={{
-              fontSize: '14px',
-              fontWeight: '700',
-              color: '#9c27b0',
-              marginBottom: '8px'
+              fontSize: `${TYPOGRAPHY_STYLES.headerSubtitle.size}px`,
+              fontWeight: TYPOGRAPHY_STYLES.tableHeader.weight,
+              color: UI_COLORS.primary,
+              marginBottom: `${LAYOUT_STYLES.gapMedium - 4}px` // 8px
             }}>
               STATUS FILTER
             </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: `${LAYOUT_STYLES.itemSpacing}px`, flexWrap: 'wrap' }}>
               {['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].map(status => (
                 <label key={status} style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: `${LAYOUT_STYLES.gapSmall + 2}px`, // 6px
                   cursor: 'pointer',
-                  fontSize: '13px',
-                  color: '#222222',
-                  fontWeight: '600'
+                  fontSize: `${TYPOGRAPHY_STYLES.buttonText.size + 1}px`, // 13px
+                  color: UI_COLORS.text,
+                  fontWeight: TYPOGRAPHY_STYLES.buttonText.weight
                 }}>
                   <input
                     type="checkbox"
                     checked={statusFilter.has(status)}
                     onChange={() => handleStatusFilterChange(status)}
                     style={{
-                      accentColor: '#9c27b0',
+                      accentColor: UI_COLORS.primary,
                       transform: 'scale(1.1)'
                     }}
                   />
@@ -371,30 +472,30 @@ const OrdersVariant7: React.FC = () => {
           {/* Priority filter */}
           <div>
             <div style={{
-              fontSize: '14px',
-              fontWeight: '700',
-              color: '#9c27b0',
-              marginBottom: '8px'
+              fontSize: `${TYPOGRAPHY_STYLES.headerSubtitle.size}px`,
+              fontWeight: TYPOGRAPHY_STYLES.tableHeader.weight,
+              color: UI_COLORS.primary,
+              marginBottom: `${LAYOUT_STYLES.gapMedium - 4}px` // 8px
             }}>
               PRIORITY FILTER
             </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: `${LAYOUT_STYLES.itemSpacing}px`, flexWrap: 'wrap' }}>
               {['LOW', 'NORMAL', 'HIGH', 'CRITICAL'].map(priority => (
                 <label key={priority} style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: `${LAYOUT_STYLES.gapSmall + 2}px`, // 6px
                   cursor: 'pointer',
-                  fontSize: '13px',
-                  color: '#222222',
-                  fontWeight: '600'
+                  fontSize: `${TYPOGRAPHY_STYLES.buttonText.size + 1}px`, // 13px
+                  color: UI_COLORS.text,
+                  fontWeight: TYPOGRAPHY_STYLES.buttonText.weight
                 }}>
                   <input
                     type="checkbox"
                     checked={priorityFilter.has(priority)}
                     onChange={() => handlePriorityFilterChange(priority)}
                     style={{
-                      accentColor: '#9c27b0',
+                      accentColor: UI_COLORS.primary,
                       transform: 'scale(1.1)'
                     }}
                   />
@@ -404,35 +505,35 @@ const OrdersVariant7: React.FC = () => {
             </div>
           </div>
 
-          {/* Results count a Report button */}
+          {/* Results count and Report button */}
           <div style={{
             marginLeft: 'auto',
             display: 'flex',
             alignItems: 'center',
-            gap: '16px'
+            gap: `${LAYOUT_STYLES.gapLarge}px`
           }}>
             <div style={{
-              color: '#3366cc',
-              fontSize: '14px',
-              fontWeight: '700'
+              color: UI_COLORS.secondary,
+              fontSize: `${TYPOGRAPHY_STYLES.headerSubtitle.size}px`,
+              fontWeight: TYPOGRAPHY_STYLES.valueText.weight
             }}>
               📊 {filteredAndSortedOrders.length} orders
             </div>
             <button
               onClick={handleReportBug}
               style={{
-                padding: '8px 16px',
-                background: '#9c27b0',
+                padding: `${LAYOUT_STYLES.gapMedium - 4}px ${LAYOUT_STYLES.gapLarge}px`, // 8px 16px
+                background: UI_COLORS.primary,
                 border: 'none',
-                borderRadius: '4px',
+                borderRadius: `${LAYOUT.borderRadius.sm}px`,
                 color: 'white',
-                fontSize: '13px',
-                fontWeight: '600',
+                fontSize: `${TYPOGRAPHY_STYLES.buttonText.size + 1}px`, // 13px
+                fontWeight: TYPOGRAPHY_STYLES.buttonText.weight,
                 cursor: 'pointer',
-                transition: 'background-color 0.2s'
+                transition: `background-color ${UI_BEHAVIOR.animation.normal}ms`
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#6a1b9a'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#9c27b0'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = UI_COLORS.primaryDark}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = UI_COLORS.primary}
             >
               🐛 Report Bug
             </button>
@@ -440,20 +541,20 @@ const OrdersVariant7: React.FC = () => {
         </div>
       </div>
 
-      {/* Main table - dizajn v6 s resizable columns */}
+      {/* Main table - refaktorovaný s konštantami */}
       <div style={{
-        background: '#ffffff',
-        border: '1px solid #dee2e6',
-        borderLeft: '6px solid #9c27b0',
+        background: LAYOUT_STYLES.cardBackground,
+        border: `1px solid ${LAYOUT_STYLES.borderColor}`,
+        borderLeft: GRADIENTS.borderAccent,
         overflow: 'hidden'
       }}>
-        {/* Sortable Header */}
+        {/* Sortable Header - refaktorovaný s konštantami */}
         <div style={{
           display: 'flex',
-          background: 'linear-gradient(90deg, #9c27b0 0%, #6a1b9a 100%)',
+          background: GRADIENTS.headerGradient,
           color: 'white',
-          fontWeight: '700',
-          fontSize: '13px',
+          fontWeight: TYPOGRAPHY_STYLES.tableHeader.weight,
+          fontSize: `${TYPOGRAPHY_STYLES.tableHeader.size + 1}px`, // 13px
           position: 'relative'
         }}>
           {[
@@ -471,7 +572,7 @@ const OrdersVariant7: React.FC = () => {
               style={{
                 width: `${col.width}px`,
                 minWidth: `${col.width}px`,
-                padding: '16px 12px',
+                padding: `${LAYOUT_STYLES.gapLarge}px ${LAYOUT_STYLES.itemSpacing}px`,
                 cursor: col.field ? 'pointer' : 'default',
                 position: 'relative',
                 display: 'flex',
@@ -482,10 +583,11 @@ const OrdersVariant7: React.FC = () => {
             >
               {col.title}
               {col.field && (
-                <span style={{ marginLeft: '6px', fontSize: '10px' }}>
+                <span style={{ marginLeft: `${LAYOUT_STYLES.gapSmall + 2}px`, fontSize: `${TYPOGRAPHY.fontSize.xs}px` }}>
                   {getSortIcon(col.field as SortField)}
                 </span>
               )}
+              {/* Resizable handle - refaktorovaný s konštantami */}
               {index < columnWidths.length - 1 && (
                 <div
                   style={{
@@ -493,7 +595,7 @@ const OrdersVariant7: React.FC = () => {
                     right: '0',
                     top: '0',
                     bottom: '0',
-                    width: '4px',
+                    width: `${COLUMN_CONFIG.resizeHandleWidth}px`,
                     cursor: 'col-resize',
                     background: 'rgba(255,255,255,0.2)'
                   }}
@@ -504,7 +606,7 @@ const OrdersVariant7: React.FC = () => {
           ))}
         </div>
 
-        {/* Rows */}
+        {/* Rows - refaktorovaný s konštantami */}
         {filteredAndSortedOrders.map((order, index) => (
           <div key={order.id}>
             {/* Main row */}
@@ -512,34 +614,34 @@ const OrdersVariant7: React.FC = () => {
               onClick={() => toggleRow(order.id)}
               style={{
                 display: 'flex',
-                background: index % 2 === 0 ? '#ffffff' : '#f8f9fa',
-                borderTop: index > 0 ? '1px solid #dee2e6' : 'none',
+                background: index % 2 === 0 ? LAYOUT_STYLES.cardBackground : UI_COLORS.alternateRow,
+                borderTop: index > 0 ? `1px solid ${LAYOUT_STYLES.borderColor}` : 'none',
                 cursor: 'pointer',
-                transition: 'background-color 0.2s',
-                fontSize: '14px',
+                transition: `background-color ${UI_BEHAVIOR.animation.normal}ms`,
+                fontSize: `${TYPOGRAPHY_STYLES.bodyText.size}px`,
                 minHeight: '54px',
                 alignItems: 'center'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#e3f2fd';
+                e.currentTarget.style.background = UI_COLORS.hover;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = index % 2 === 0 ? '#ffffff' : '#f8f9fa';
+                e.currentTarget.style.background = index % 2 === 0 ? LAYOUT_STYLES.cardBackground : UI_COLORS.alternateRow;
               }}
             >
               <div style={{
                 width: `${columnWidths[0]}px`,
                 minWidth: `${columnWidths[0]}px`,
-                padding: '0 12px',
+                padding: `0 ${LAYOUT_STYLES.itemSpacing}px`,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center'
               }}>
                 <span style={{
                   transform: expandedRows.has(order.id) ? 'rotate(90deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s',
-                  fontSize: '16px',
-                  color: '#9c27b0'
+                  transition: `transform ${UI_BEHAVIOR.animation.normal}ms`,
+                  fontSize: `${TYPOGRAPHY_STYLES.bodyText.size + 2}px`, // 16px
+                  color: UI_COLORS.primary
                 }}>
                   ▶
                 </span>
@@ -547,31 +649,32 @@ const OrdersVariant7: React.FC = () => {
               <div style={{
                 width: `${columnWidths[1]}px`,
                 minWidth: `${columnWidths[1]}px`,
-                padding: '0 12px',
+                padding: `0 ${LAYOUT_STYLES.itemSpacing}px`,
                 fontFamily: 'monospace',
-                fontWeight: '600',
-                color: '#3366cc'
+                fontWeight: TYPOGRAPHY_STYLES.buttonText.weight,
+                color: UI_COLORS.secondary
               }}>
                 {order.orderNumber}
               </div>
               <div style={{
                 width: `${columnWidths[2]}px`,
                 minWidth: `${columnWidths[2]}px`,
-                padding: '0 12px',
-                fontWeight: '600'
+                padding: `0 ${LAYOUT_STYLES.itemSpacing}px`,
+                fontWeight: TYPOGRAPHY_STYLES.buttonText.weight,
+                color: UI_COLORS.text
               }}>
                 {order.customer}
               </div>
               <div style={{
                 width: `${columnWidths[3]}px`,
                 minWidth: `${columnWidths[3]}px`,
-                padding: '0 12px'
+                padding: `0 ${LAYOUT_STYLES.itemSpacing}px`
               }}>
                 <span style={{
-                  padding: '4px 8px',
-                  borderRadius: '3px',
-                  fontSize: '12px',
-                  fontWeight: '600',
+                  padding: `${LAYOUT_STYLES.gapSmall}px ${LAYOUT_STYLES.gapMedium - 4}px`, // 4px 8px
+                  borderRadius: `${LAYOUT.borderRadius.sm - 1}px`, // 3px
+                  fontSize: `${TYPOGRAPHY_STYLES.badgeText.size}px`,
+                  fontWeight: TYPOGRAPHY_STYLES.badgeText.weight,
                   background: getPriorityColor(order.priority),
                   color: 'white'
                 }}>
@@ -581,13 +684,13 @@ const OrdersVariant7: React.FC = () => {
               <div style={{
                 width: `${columnWidths[4]}px`,
                 minWidth: `${columnWidths[4]}px`,
-                padding: '0 12px'
+                padding: `0 ${LAYOUT_STYLES.itemSpacing}px`
               }}>
                 <span style={{
-                  padding: '4px 8px',
-                  borderRadius: '3px',
-                  fontSize: '12px',
-                  fontWeight: '600',
+                  padding: `${LAYOUT_STYLES.gapSmall}px ${LAYOUT_STYLES.gapMedium - 4}px`, // 4px 8px
+                  borderRadius: `${LAYOUT.borderRadius.sm - 1}px`, // 3px
+                  fontSize: `${TYPOGRAPHY_STYLES.badgeText.size}px`,
+                  fontWeight: TYPOGRAPHY_STYLES.badgeText.weight,
                   background: getStatusColor(order.status),
                   color: 'white'
                 }}>
@@ -597,73 +700,74 @@ const OrdersVariant7: React.FC = () => {
               <div style={{
                 width: `${columnWidths[5]}px`,
                 minWidth: `${columnWidths[5]}px`,
-                padding: '0 12px',
+                padding: `0 ${LAYOUT_STYLES.itemSpacing}px`,
                 fontFamily: 'monospace',
-                color: '#666'
+                color: UI_COLORS.textMuted
               }}>
                 {order.date}
               </div>
               <div style={{
                 width: `${columnWidths[6]}px`,
                 minWidth: `${columnWidths[6]}px`,
-                padding: '0 12px',
+                padding: `0 ${LAYOUT_STYLES.itemSpacing}px`,
                 textAlign: 'right',
-                fontWeight: '700',
-                color: '#388e3c'
+                fontWeight: TYPOGRAPHY_STYLES.valueText.weight,
+                color: UI_COLORS.success
               }}>
                 ${order.value.toLocaleString()}
               </div>
               <div style={{
                 width: `${columnWidths[7]}px`,
                 minWidth: `${columnWidths[7]}px`,
-                padding: '0 12px',
+                padding: `0 ${LAYOUT_STYLES.itemSpacing}px`,
                 textAlign: 'center',
-                fontWeight: '600'
+                fontWeight: TYPOGRAPHY_STYLES.buttonText.weight,
+                color: UI_COLORS.text
               }}>
                 {order.items}
               </div>
             </div>
 
-            {/* Expanded details - štýl v6 */}
+            {/* Expanded details - refaktorovaný s konštantami */}
             {expandedRows.has(order.id) && (
               <div style={{
-                background: '#f2f3f7',
-                border: '2px solid #9c27b0',
+                background: UI_COLORS.detailBackground,
+                border: `2px solid ${UI_COLORS.primary}`,
                 borderTop: 'none',
-                padding: '24px',
-                fontSize: '13px'
+                padding: `${LAYOUT_STYLES.filterPanelPadding}px`,
+                fontSize: `${TYPOGRAPHY_STYLES.buttonText.size + 1}px` // 13px
               }}>
                 <div style={{
-                  marginBottom: '16px',
-                  fontSize: '14px',
-                  fontWeight: '700',
-                  color: '#9c27b0'
+                  marginBottom: `${LAYOUT_STYLES.gapLarge}px`,
+                  fontSize: `${TYPOGRAPHY_STYLES.headerSubtitle.size}px`,
+                  fontWeight: TYPOGRAPHY_STYLES.valueText.weight,
+                  color: UI_COLORS.primary
                 }}>
                   📋 ORDER DETAILS: {order.description}
                 </div>
 
                 {order.details && (
                   <div style={{
-                    background: '#ffffff',
-                    borderRadius: '4px',
+                    background: LAYOUT_STYLES.cardBackground,
+                    borderRadius: `${LAYOUT.borderRadius.sm}px`,
                     overflow: 'hidden',
-                    border: '1px solid #dee2e6'
+                    border: `1px solid ${LAYOUT_STYLES.borderColor}`
                   }}>
                     {/* Detail header */}
                     <div style={{
                       display: 'grid',
                       gridTemplateColumns: '150px 80px 120px 1fr',
-                      background: '#f8f9fa',
-                      padding: '12px',
-                      fontWeight: '700',
-                      fontSize: '12px',
-                      color: '#222222',
-                      borderBottom: '1px solid #dee2e6'
+                      background: UI_COLORS.alternateRow,
+                      padding: `${LAYOUT_STYLES.itemSpacing}px`,
+                      fontWeight: TYPOGRAPHY_STYLES.valueText.weight,
+                      fontSize: `${TYPOGRAPHY_STYLES.badgeText.size}px`,
+                      color: UI_COLORS.text,
+                      borderBottom: `1px solid ${LAYOUT_STYLES.borderColor}`
                     }}>
                       <div>PART NUMBER</div>
                       <div style={{ textAlign: 'center' }}>QTY</div>
                       <div style={{ textAlign: 'right' }}>UNIT PRICE</div>
-                      <div style={{ paddingLeft: '16px' }}>SPECIFICATIONS</div>
+                      <div style={{ paddingLeft: `${LAYOUT_STYLES.gapLarge}px` }}>SPECIFICATIONS</div>
                     </div>
 
                     {/* Detail rows */}
@@ -671,30 +775,30 @@ const OrdersVariant7: React.FC = () => {
                       <div key={idx} style={{
                         display: 'grid',
                         gridTemplateColumns: '150px 80px 120px 1fr',
-                        padding: '12px',
-                        background: idx % 2 === 0 ? '#ffffff' : '#f8f9fa',
-                        borderTop: idx > 0 ? '1px solid #dee2e6' : 'none'
+                        padding: `${LAYOUT_STYLES.itemSpacing}px`,
+                        background: idx % 2 === 0 ? LAYOUT_STYLES.cardBackground : UI_COLORS.alternateRow,
+                        borderTop: idx > 0 ? `1px solid ${LAYOUT_STYLES.borderColor}` : 'none'
                       }}>
                         <div style={{
                           fontFamily: 'monospace',
-                          fontWeight: '600',
-                          color: '#3366cc'
+                          fontWeight: TYPOGRAPHY_STYLES.buttonText.weight,
+                          color: UI_COLORS.secondary
                         }}>
                           {detail.partNumber}
                         </div>
-                        <div style={{ textAlign: 'center', fontWeight: '600' }}>
+                        <div style={{ textAlign: 'center', fontWeight: TYPOGRAPHY_STYLES.buttonText.weight, color: UI_COLORS.text }}>
                           {detail.quantity}
                         </div>
                         <div style={{
                           textAlign: 'right',
-                          fontWeight: '600',
-                          color: '#388e3c'
+                          fontWeight: TYPOGRAPHY_STYLES.buttonText.weight,
+                          color: UI_COLORS.success
                         }}>
                           ${detail.unitPrice.toLocaleString()}
                         </div>
                         <div style={{
-                          paddingLeft: '16px',
-                          color: '#666'
+                          paddingLeft: `${LAYOUT_STYLES.gapLarge}px`,
+                          color: UI_COLORS.textMuted
                         }}>
                           {detail.specifications}
                         </div>
@@ -708,51 +812,51 @@ const OrdersVariant7: React.FC = () => {
         ))}
       </div>
 
-      {/* Status bar - štýl zo starého projektu */}
+      {/* Status bar - refaktorovaný s konštantami */}
       <div style={{
-        marginTop: '2rem',
+        marginTop: `${LAYOUT_STYLES.cardMargin}px`,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '16px 24px',
-        background: '#ffffff',
-        border: '1px solid #dee2e6',
-        borderLeft: '6px solid #388e3c'
+        padding: `${LAYOUT_STYLES.gapLarge}px ${LAYOUT_STYLES.filterPanelPadding}px`,
+        background: LAYOUT_STYLES.cardBackground,
+        border: `1px solid ${LAYOUT_STYLES.borderColor}`,
+        borderLeft: `6px solid ${UI_COLORS.success}`
       }}>
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: `${LAYOUT_STYLES.filterPanelPadding}px`, alignItems: 'center' }}>
           <div style={{
-            fontSize: '14px',
-            fontWeight: '700',
-            color: '#222222'
+            fontSize: `${TYPOGRAPHY_STYLES.headerSubtitle.size}px`,
+            fontWeight: TYPOGRAPHY_STYLES.valueText.weight,
+            color: UI_COLORS.text
           }}>
             <strong>Orders:</strong> {filteredAndSortedOrders.length}
           </div>
           <div style={{
-            fontSize: '14px',
-            fontWeight: '700',
-            color: '#222222'
+            fontSize: `${TYPOGRAPHY_STYLES.headerSubtitle.size}px`,
+            fontWeight: TYPOGRAPHY_STYLES.valueText.weight,
+            color: UI_COLORS.text
           }}>
             <strong>Total Items:</strong> {totalItems.toLocaleString()}
           </div>
           <div style={{
-            fontSize: '14px',
-            fontWeight: '700',
-            color: '#388e3c'
+            fontSize: `${TYPOGRAPHY_STYLES.headerSubtitle.size}px`,
+            fontWeight: TYPOGRAPHY_STYLES.valueText.weight,
+            color: UI_COLORS.success
           }}>
             <strong>Total Value:</strong> ${totalValue.toLocaleString()}
           </div>
         </div>
 
         <div style={{
-          fontSize: '12px',
-          color: '#666',
-          fontWeight: '600'
+          fontSize: `${TYPOGRAPHY_STYLES.badgeText.size}px`,
+          color: UI_COLORS.textMuted,
+          fontWeight: TYPOGRAPHY_STYLES.buttonText.weight
         }}>
-          L-KERN Professional ERP v7 • Luhovy Industries Manufacturing Solutions
+          L-KERN Professional ERP v8 • Luhovy Industries Manufacturing Solutions
         </div>
       </div>
     </div>
   );
 };
 
-export default OrdersVariant7;
+export default OrdersVariant8;

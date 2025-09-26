@@ -4,6 +4,7 @@
  * Farby: olivová zelená, šedá, čierna, žltá (warning)
  */
 import React, { useState } from 'react';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 interface Order {
   id: string;
@@ -105,6 +106,7 @@ const OrdersVariant3: React.FC = () => {
       fontFamily: "'Courier New', 'Roboto Mono', monospace",
       padding: '24px'
     }}>
+      <DebugBar title="OrdersVariant3 - Military Grade" />
 
       {/* MILITARY HEADER */}
       <div style={{

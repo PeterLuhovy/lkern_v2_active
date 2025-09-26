@@ -4,6 +4,7 @@
  * Farby: oranžová, žltá, tmavo šedá, červená (warning)
  */
 import React, { useState } from 'react';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 interface Order {
   id: string;
@@ -105,6 +106,7 @@ const OrdersVariant4: React.FC = () => {
       fontFamily: "'Orbitron', 'Roboto', sans-serif",
       padding: '24px'
     }}>
+      <DebugBar title="OrdersVariant4 - Nuclear Energy" />
 
       {/* NUCLEAR WARNING HEADER */}
       <div style={{

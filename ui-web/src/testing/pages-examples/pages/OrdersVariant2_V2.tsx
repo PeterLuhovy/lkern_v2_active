@@ -1,21 +1,22 @@
 /**
  * ================================================================
- * SÚBOR: OrdersVariant2_V3.tsx
- * CESTA: /ui-web/src/testing/design-examples/OrdersVariant2_V3.tsx
- * POPIS: Orders Management V3 - V2 funkcionalita + Golden Ratio Design System
+ * SÚBOR: OrdersVariant2_V2.tsx
+ * CESTA: /ui-web/src/testing/design-examples/OrdersVariant2_V2.tsx
+ * POPIS: Orders Management V2 - kópia OrdersVariant2 s novým názvom
  * VERZIA: v1.0.0
- * UPRAVENÉ: 2025-01-27 23:45:00
+ * UPRAVENÉ: 2025-01-27 23:30:00
  * ================================================================
  */
 
 /**
- * VARIANT 2 V3: L-KERN Professional s Complete Design System
- * Všetky frontend vylepšenia z V2 + Golden Ratio design principles
- * Unified typography, color system, spacing, a micro-interactions
+ * VARIANT 2 V2: L-KERN Professional s StatusBar a ReportButton
+ * Inšpirovaný OrdersVariant9 - kompletná funkcionálna verzia
+ * Farby z theme.css: #9c27b0, #3366cc, #f2f3f7, #222222
  */
 import React, { useState, useEffect } from 'react';
-import lkernLogo from '../../assets/logos/lkern-logo.png';
-import luhovyLogo from '../../assets/logos/luhovy-logo.png';
+import lkernLogo from '../../../assets/logos/lkern-logo.png';
+import luhovyLogo from '../../../assets/logos/luhovy-logo.png';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 interface Order {
   id: string;
@@ -794,7 +795,7 @@ const ReportButton: React.FC = () => {
 
 // === HLAVNÝ KOMPONENT ===
 
-const OrdersVariant2_V3: React.FC = () => {
+const OrdersVariant2_V2: React.FC = () => {
   // Load settings from localStorage
   const loadSettings = () => {
     try {
@@ -1296,16 +1297,8 @@ const OrdersVariant2_V3: React.FC = () => {
 
   const currentTheme = getTheme();
 
-  // Compact mode spacing
-  const getSpacing = (base: string) => {
-    if (!customThemeSettings.compactMode) return base;
-    const spacing = parseFloat(base.replace(/px|rem|em/, ''));
-    const unit = base.replace(/[0-9.]/g, '');
-    return `${spacing * 0.75}${unit}`;
-  };
-
   // Animation settings
-  const getTransition = (transition: string) => {
+  const getTransition = (transition: string = 'all 0.3s ease') => {
     return customThemeSettings.showAnimations ? transition : 'none';
   };
 
@@ -1670,15 +1663,12 @@ const OrdersVariant2_V3: React.FC = () => {
     <div style={{
       minHeight: '100vh',
       background: currentTheme.background,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif',
-      padding: isMobile
-        ? `${getSpacing('sm')} ${getSpacing('sm')} ${getSpacing('xxl')} ${getSpacing('sm')}`
-        : isTablet
-        ? `${getSpacing('md')} ${getSpacing('md')} ${getSpacing('xxl')} ${getSpacing('md')}`
-        : `${getSpacing('lg')} ${getSpacing('xxl')} ${getSpacing('xxl')} ${getSpacing('md')}`,
-      paddingBottom: getSpacing('xxl'),
-      transition: getTransition('medium')
+      fontFamily: "'Segoe UI', sans-serif",
+      padding: isMobile ? '1rem 1rem 5rem 1rem' : isTablet ? '2rem 2rem 5rem 2rem' : '4rem 10rem 5rem 2rem',
+      paddingBottom: '80px',
+      transition: 'background-color 0.3s ease'
     }}>
+      <DebugBar title="OrdersVariant2_V2 - Enhanced" />
 
       {/* L-KERN HEADER */}
       <div style={{
@@ -1686,10 +1676,10 @@ const OrdersVariant2_V3: React.FC = () => {
         padding: '20px',
         marginBottom: '2rem',
         border: `1px solid ${currentTheme.border}`,
-        borderLeft: `6px solid ${customThemeSettings.accentColor}`,
-        borderRadius: getSpacing('xs'),
+        borderLeft: '6px solid #9c27b0',
+        borderRadius: '8px',
         boxShadow: currentTheme.shadow,
-        transition: getTransition('medium')
+        transition: 'all 0.3s ease'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -1697,19 +1687,17 @@ const OrdersVariant2_V3: React.FC = () => {
             <div>
               <h1 style={{
                 margin: 0,
-                fontSize: '24px',
-                lineHeight: '1.4',
-                fontWeight: '600',
+                fontSize: '28px',
+                fontWeight: '700',
                 color: currentTheme.text
               }}>
                 Orders Management V2
               </h1>
               <div style={{
                 fontSize: '14px',
-                lineHeight: '1.4',
-                fontWeight: '500',
-                color: customThemeSettings.accentColor,
-                marginTop: getSpacing('xs')
+                color: '#9c27b0',
+                fontWeight: '600',
+                marginTop: '4px'
               }}>
                 Professional ERP System v2 • Manufacturing Operations
               </div>
@@ -3122,4 +3110,4 @@ const OrdersVariant2_V3: React.FC = () => {
   );
 };
 
-export default OrdersVariant2_V3;
+export default OrdersVariant2_V2;

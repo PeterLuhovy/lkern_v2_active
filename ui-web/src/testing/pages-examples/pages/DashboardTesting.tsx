@@ -9,10 +9,10 @@
  */
 
 import React, { useState } from 'react';
-import DesignExamples from './design-examples';
-import ModalComponentsHub from './modal-components';
-import PagesDashboard from './pages-dashboard';
-import DebugList from '../components/shared/ProfessionalDebugSystem';
+import DesignExamples from './DashboardDesignExamples';
+import ModalComponentsHub from '../../modals-examples';
+import PagesDashboard from './DashboardTestPages';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 type TestingSection = 'home' | 'design-examples' | 'modal-components' | 'pages-dashboard';
 
@@ -24,10 +24,7 @@ const TestingDashboard: React.FC = () => {
   if (selectedSection === 'design-examples') {
     return (
       <div>
-        <DebugList
-          pageName="Design Examples"
-          pagePath="/ui-web/src/testing/design-examples/index.tsx"
-        />
+        <DebugBar title="Design Examples" />
         <DesignExamples />
       </div>
     );
@@ -36,10 +33,7 @@ const TestingDashboard: React.FC = () => {
   if (selectedSection === 'pages-dashboard') {
     return (
       <div>
-        <DebugList
-          pageName="Pages Dashboard"
-          pagePath="/ui-web/src/testing/pages-dashboard/index.tsx"
-        />
+        <DebugBar title="Pages Dashboard" />
         <PagesDashboard />
       </div>
     );
@@ -48,10 +42,7 @@ const TestingDashboard: React.FC = () => {
   if (selectedSection === 'modal-components') {
     return (
       <div>
-        <DebugList
-          pageName="Modal Components"
-          pagePath="/ui-web/src/testing/modal-components/index.tsx"
-        />
+        <DebugBar title="Modal Components" />
         <ModalComponentsHub />
       </div>
     );
@@ -126,10 +117,7 @@ const TestingDashboard: React.FC = () => {
       fontFamily: "'Inter', 'Segoe UI', sans-serif"
     }}>
 
-      <DebugList
-        pageName="L-KERN Testing Dashboard (Main)"
-        pagePath="/ui-web/src/testing/index.tsx"
-      />
+      <DebugBar title="L-KERN Testing Dashboard" />
 
       {/* Main Header */}
       <div style={{

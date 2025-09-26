@@ -11,18 +11,18 @@
 // === SHARED KOMPONENTY EXPORTS ===
 
 // Priority selector komponent
-export { default as PrioritySelector } from './PrioritySelector';
-export type { PriorityType } from './PrioritySelector';
+export { default as PrioritySelector } from './PrioritySelector/PrioritySelector';
+export type { PriorityType } from './PrioritySelector/PrioritySelector';
 
 // Type selector komponent
-export { default as TypeSelector } from './TypeSelector';
-export type { PartType } from './TypeSelector';
+export { default as TypeSelector } from './TypeSelector/TypeSelector';
+export type { PartType } from './TypeSelector/TypeSelector';
 
 // Dropdown s modal funkcionalitou
-export { default as DropdownWithModal } from './DropdownWithModal';
+export { default as DropdownWithModal } from './DropdownWithModal/DropdownWithModal';
 
 // Add item button komponent
-export { default as AddItemButton } from './AddItemButton';
+export { default as AddItemButton } from './AddItemButton/AddItemButton';
 
 // === UTILITY TYPES ===
 export interface SharedComponentTheme {

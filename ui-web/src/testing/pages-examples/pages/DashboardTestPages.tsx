@@ -9,9 +9,9 @@
  */
 
 import React, { useState } from 'react';
-import OrdersVariant2 from '../design-examples/OrdersVariant2';
-import OrdersVariant2V2 from '../design-examples/OrdersVariant2_V2';
-import DebugList from '../../components/shared/ProfessionalDebugSystem';
+import OrdersVariant2 from './OrdersVariant2';
+import OrdersVariant2V2 from './OrdersVariant2_V2';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 type PageView = 'dashboard' | 'orders-variant2' | 'orders-variant2-v2';
 
@@ -49,10 +49,7 @@ const PagesDashboard: React.FC = () => {
   if (currentPage === 'orders-variant2') {
     return (
       <div>
-        <DebugList
-          pageName="Orders Management V1"
-          pagePath="/ui-web/src/testing/design-examples/OrdersVariant2.tsx"
-        />
+        <DebugBar title="Orders Management V1" />
         {availablePages[0].component}
       </div>
     );
@@ -61,10 +58,7 @@ const PagesDashboard: React.FC = () => {
   if (currentPage === 'orders-variant2-v2') {
     return (
       <div>
-        <DebugList
-          pageName="Orders Management V2"
-          pagePath="/ui-web/src/testing/design-examples/OrdersVariant2_V2.tsx"
-        />
+        <DebugBar title="Orders Management V2" />
         {availablePages[1].component}
       </div>
     );
@@ -79,10 +73,7 @@ const PagesDashboard: React.FC = () => {
       fontFamily: "'Inter', 'Segoe UI', sans-serif"
     }}>
 
-      <DebugList
-        pageName="Pages Dashboard (Main)"
-        pagePath="/ui-web/src/testing/pages-dashboard/index.tsx"
-      />
+      <DebugBar title="Pages Dashboard" />
 
       {/* Main Header - PRESNE AKO TESTING HUB */}
       <div style={{

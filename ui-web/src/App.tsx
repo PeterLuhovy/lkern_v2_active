@@ -10,7 +10,7 @@
 
 import './App.css'
 import { useState } from 'react'
-import TestingDashboard from './testing'
+import DashboardTesting from './testing/pages-examples/pages/DashboardTesting'
 import { COLORS } from './config/constants'
 
 // === CONSTANTS ===
@@ -120,11 +120,11 @@ function App() {
 
   // === HLAVNÁ LOGIKA ===
 
-  // Ak je vybraná testing sekcia - zobraz nový organizovaný TestingHub
+  // Ak je vybraná testing sekcia - zobraz priamo testing dashboard
   if (selectedSection === 'testing') {
     return (
       <div>
-        <TestingDashboard />
+        <DashboardTesting />
       </div>
     );
   }

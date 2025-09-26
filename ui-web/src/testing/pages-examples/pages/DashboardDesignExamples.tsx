@@ -12,8 +12,8 @@ import React, { useState } from 'react';
 import OrdersVariant2 from './OrdersVariant2';
 import OrdersVariant2_V2 from './OrdersVariant2_V2';
 import OrdersVariant2_V3 from './OrdersVariant2_V3';
-import ObsoleteVariants from './obs/ObsoleteVariants';
-import DebugList from '../../components/shared/ProfessionalDebugSystem';
+import ObsoleteVariants from '../obs/ObsoleteVariants';
+import DebugBar from '../components/DebugBar/DebugBar';
 
 type DesignVariant = 'home' | 'variant2' | 'variant2-v2' | 'variant2-v3' | 'obsolete';
 
@@ -24,10 +24,7 @@ const DesignExamples: React.FC = () => {
   if (selectedVariant === 'variant2') {
     return (
       <div>
-        <DebugList
-          pageName="Orders Management V1"
-          pagePath="/ui-web/src/testing/design-examples/OrdersVariant2.tsx"
-        />
+        <DebugBar title="Orders Management V1" />
         <OrdersVariant2 />
       </div>
     );
@@ -36,10 +33,7 @@ const DesignExamples: React.FC = () => {
   if (selectedVariant === 'variant2-v2') {
     return (
       <div>
-        <DebugList
-          pageName="Orders Management V2"
-          pagePath="/ui-web/src/testing/design-examples/OrdersVariant2_V2.tsx"
-        />
+        <DebugBar title="Orders Management V2" />
         <OrdersVariant2_V2 />
       </div>
     );
@@ -48,10 +42,7 @@ const DesignExamples: React.FC = () => {
   if (selectedVariant === 'variant2-v3') {
     return (
       <div>
-        <DebugList
-          pageName="Orders Management V3"
-          pagePath="/ui-web/src/testing/design-examples/OrdersVariant2_V3.tsx"
-        />
+        <DebugBar title="Orders Management V3" />
         <OrdersVariant2_V3 />
       </div>
     );
@@ -60,10 +51,7 @@ const DesignExamples: React.FC = () => {
   if (selectedVariant === 'obsolete') {
     return (
       <div>
-        <DebugList
-          pageName="Obsolete Variants"
-          pagePath="/ui-web/src/testing/design-examples/obs/ObsoleteVariants.tsx"
-        />
+        <DebugBar title="Obsolete Variants" />
         <ObsoleteVariants />
       </div>
     );
@@ -138,10 +126,7 @@ const DesignExamples: React.FC = () => {
       fontFamily: "'Inter', 'Segoe UI', sans-serif"
     }}>
 
-      <DebugList
-        pageName="Design Examples Hub (Main)"
-        pagePath="/ui-web/src/testing/design-examples/index.tsx"
-      />
+      <DebugBar title="Design Examples Hub" />
 
       {/* Main Header */}
       <div style={{
